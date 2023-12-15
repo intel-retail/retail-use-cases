@@ -21,7 +21,6 @@ OvmsClient:
     ContainerName: grpc_go
     Volumes:
       - "$RUN_PATH/results:/tmp/results"
-      - ~/.Xauthority:/home/dlstreamer/.Xauthority
       - /tmp/.X11-unix
   PipelineScript: ./entrypoint.sh
   PipelineInputArgs: "" # space delimited like we run the script in command and take those input arguments

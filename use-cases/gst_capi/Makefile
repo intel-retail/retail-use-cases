@@ -11,7 +11,7 @@ build: build_face_detection build_capi_yolov5 build_capi_yolov5_ensemble
 
 build_face_detection:
 	# Build CAPI docker image
-	docker build $(NO_CACHE_OPTION) -f Dockerfile.ovms-capi-gst ../ \
+	docker build $(NO_CACHE_OPTION) -f Dockerfile ../ \
 		--build-arg http_proxy=$(HTTP_PROXY) \
 		--build-arg https_proxy="$(HTTPS_PROXY)" \
 		--build-arg no_proxy=$(NO_PROXY) \
@@ -23,7 +23,7 @@ build_face_detection:
 
 build_capi_yolov5:
 	# Build CAPI docker image
-	docker build $(NO_CACHE_OPTION) -f Dockerfile.ovms-capi-gst ../ \
+	docker build $(NO_CACHE_OPTION) -f Dockerfile ../ \
 		--build-arg http_proxy=$(HTTP_PROXY) \
 		--build-arg https_proxy="$(HTTPS_PROXY)" \
 		--build-arg no_proxy=$(NO_PROXY) \
@@ -34,7 +34,7 @@ build_capi_yolov5:
 		-t $(OVMS_CPP_DOCKER_IMAGE)-capi-gst-ovms-capi_yolov5:$(OVMS_CPP_IMAGE_TAG)
 
 build_capi_yolov5_ensemble:
-	docker build $(NO_CACHE_OPTION) -f Dockerfile.ovms-capi-gst ../ \
+	docker build $(NO_CACHE_OPTION) -f Dockerfile ../ \
 		--build-arg http_proxy=$(HTTP_PROXY) \
 		--build-arg https_proxy="$(HTTPS_PROXY)" \
 		--build-arg no_proxy=$(NO_PROXY) \

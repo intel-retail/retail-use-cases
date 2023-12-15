@@ -4,4 +4,4 @@
 .PHONY: build
 
 build:
-	docker build --tag python-demo:dev -f Dockerfile.python .
+	docker build --tag python-demo:dev -f Dockerfile .

@@ -1,6 +1,6 @@
 # Copyright © 2023 Intel Corporation. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
-.PHONY: build-all
+.PHONY: build-all download-models
 
 USECASES= \
 			demos \
@@ -20,6 +20,8 @@ build-all:
 			cd ../..; \
 		done
 
+download-models:
+	./models-downloader/downloadModels.sh
 # .PHONY: build-dlstreamer build-dlstreamer-realsense build-grpc-python build-grpc-go build-python-apps build-telegraf
 # .PHONY: build-capi_face_detection build-capi_yolov5 build-capi_yolov5_ensemble
 # .PHONY: run-camera-simulator run-telegraf run-portainer run-pipelines
