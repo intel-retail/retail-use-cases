@@ -4,4 +4,4 @@
 .PHONY: build
 
 build:
-	HTTPS_PROXY=${HTTPS_PROXY} HTTP_PROXY=${HTTP_PROXY} docker pull openvino/model_server:2023.1-gpu
+	HTTPS_PROXY=${HTTPS_PROXY} HTTP_PROXY=${HTTP_PROXY} docker build -t ovms-server:dev .
