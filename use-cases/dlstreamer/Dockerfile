@@ -14,6 +14,7 @@ RUN pip3 install --upgrade pip --no-cache-dir -r /requirements.txt
 WORKDIR /
 COPY /extensions /home/pipeline-server/extensions
 COPY /framework-pipelines /home/pipeline-server/framework-pipelines
+COPY entrypoint.sh /script/entrypoint.sh
 
 FROM base as build-realsense
 RUN if [ -n "$HTTP_PROXY" ] ; then  echo "Acquire::http::Proxy \"$HTTP_PROXY\";" >  /etc/apt/apt.conf; fi
