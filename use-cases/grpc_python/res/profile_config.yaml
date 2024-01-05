@@ -1,0 +1,15 @@
+Containers:
+ - Name: grpc_python
+   DockerImage: grpc_python:dev
+   EnvironmentVariableFiles: grpc_python.env
+   Entrypoint: /app/entrypoint.sh --model_name instance-segmentation-security-1040
+   Volumes: 
+     - "./results:/tmp/results"
+ - Name: ovms_server
+   DockerImage: ovms-server:dev
+   EnvironmentVariableFiles: ../../ovms_server/res/ovms_server.env
+   Entrypoint: /script/entrypoint.sh
+   Volumes: 
+     - /tmp/.X11-unix:/tmp/.X11-unix
+     - "./models:/models"
+     - "./results:/tmp/results"
