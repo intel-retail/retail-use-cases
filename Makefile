@@ -1,6 +1,6 @@
 # Copyright © 2023 Intel Corporation. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
-.PHONY: build-all download-models
+.PHONY: build-all download-models build-profile-launcher update-submodules
 
 USECASES= \
 			demos \
@@ -22,3 +22,10 @@ build-all:
 
 download-models:
 	./models-downloader/downloadModels.sh
+	./models-downloader/downloadOVMSModels.sh
+
+build-profile-launcher:
+	@cd ./core-services && $(MAKE) build-profile-launcher
+
+upddate-submodules:
+	git submodule update --init --recursive
