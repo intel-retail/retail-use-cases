@@ -68,19 +68,10 @@ then
 	rmDocker=
 fi
 
-echo "$PLATFORM"
-if [ "$PLATFORM" == "dgpu" ]; then
-	echo /home/pipeline-server/envs/yolov5-gpu.env
-	source /home/pipeline-server/envs/yolov5-gpu.env
-else
-	echo /home/pipeline-server/envs/yolov5-cpu.env
-	source /home/pipeline-server/envs/yolov5-cpu.env
-fi
-
 echo "OCR_RECLASSIFY_INTERVAL=$OCR_RECLASSIFY_INTERVAL  BARCODE_RECLASSIFY_INTERVAL=$BARCODE_RECLASSIFY_INTERVAL"
 
 echo $rmDocker
-bash_cmd="/home/pipeline-server/framework-pipelines/yolov5_pipeline/$PIPELINE_SCRIPT"
+bash_cmd="/home/pipeline-server/framework-pipelines/$PIPELINE_SCRIPT"
 
 inputsrc=$INPUTSRC
 if grep -q "rtsp" <<< "$INPUTSRC"; then
