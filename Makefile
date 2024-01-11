@@ -27,5 +27,5 @@ download-models:
 build-profile-launcher:
 	@cd ./core-services && $(MAKE) build-profile-launcher
 
-upddate-submodules:
+update-submodules:
 	git submodule update --init --recursive
