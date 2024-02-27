@@ -29,7 +29,7 @@ RUN ./download-tools.sh
 # 2. Downloads needed quantization dependencies
 #    if not already existing in the current model_build directory
 # 3. Finally, converts OpenVINO FP32 IR to INT8 with necessary preprocessing layer
-RUN ./convert-model.sh $REFRESH_OPTION
+RUN ./convert-model.sh "$REFRESH_OPTION"
 
 ENTRYPOINT ["/bin/bash", "-c", "cp yolov8n-int8-416.* /savedir"]
 
