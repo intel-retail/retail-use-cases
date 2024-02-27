@@ -36,7 +36,8 @@ build-profile-launcher:
 	@cd ./core-services && $(MAKE) build-profile-launcher
 
 update-submodules:
-	git submodule update --init --recursive
+	@git submodule update --init --recursive
+	@git submodule update --remote --merge
 
 download-sample-media:
 	@cd ./performance-tools/benchmark-scripts && ./download_sample_videos.sh
