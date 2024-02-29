@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2023 Intel Corporation.
+# Copyright (C) 2024 Intel Corporation.
 #
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -15,6 +15,7 @@ WORKDIR /
 COPY /extensions /home/pipeline-server/extensions
 COPY /framework-pipelines /home/pipeline-server/framework-pipelines
 COPY entrypoint.sh /script/entrypoint.sh
+RUN chmod +x /script/entrypoint.sh
 
 FROM base as build-realsense
 RUN if [ -n "$HTTP_PROXY" ] ; then  echo "Acquire::http::Proxy \"$HTTP_PROXY\";" >  /etc/apt/apt.conf; fi

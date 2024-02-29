@@ -1,3 +1,8 @@
 [submodule "core-services"]
 	path = core-services
 	url = https://github.com/intel-retail/core-services
+	branch = main
+[submodule "performance-tools"]
+	path = performance-tools
+	url = https://github.com/intel-retail/performance-tools
+	branch = main
