@@ -1,3 +1,9 @@
+#
+# Copyright (C) 2024 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
 FROM openvino/model_server:2023.1-gpu
 
 USER root
@@ -7,6 +13,7 @@ RUN apt-get update -y || true; DEBIAN_FRONTEND=noninteractive apt-get install -y
 
 COPY config.json /config/config.json
 COPY entrypoint.sh /script/entrypoint.sh
+RUN chmod +x /script/entrypoint.sh
 
 USER ovms
 ENTRYPOINT ["/script/entrypoint.sh"]

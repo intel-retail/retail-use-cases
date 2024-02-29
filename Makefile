@@ -1,8 +1,9 @@
 # Copyright © 2024 Intel Corporation. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
-.PHONY: build-all download-models clean-models build-profile-launcher update-submodules
+.PHONY: build-all download-models clean-models build-profile-launcher update-submodules build-ovms_server
 .PHONY: download-sample-media
-.PHONY: run-gst down-gst
+.PHONY: build-gst run-gst down-gst
+.PHONY: build-grpc_python list-grpc-python-model-names run-grpc_python down-grpc_python
 .PHONY: clean-results
 
 USECASES= \
@@ -35,6 +36,9 @@ clean-results:
 build-profile-launcher:
 	@cd ./core-services && $(MAKE) build-profile-launcher
 
+build-ovms_server:
+	@cd ./use-cases/ovms_server && $(MAKE) build
+
 update-submodules:
 	@git submodule update --init --recursive
 	@git submodule update --remote --merge
@@ -42,8 +46,25 @@ update-submodules:
 download-sample-media:
 	@cd ./performance-tools/benchmark-scripts && ./download_sample_videos.sh
 
-run-gst: download-models download-sample-media
-	@cd ./use-cases/dlstreamer && make run
+build-gst:
+	@cd ./use-cases/dlstreamer && $(MAKE) --no-print-directory build
+
+prepare-inputs: download-models download-sample-media
+
+run-gst: prepare-inputs
+	@cd ./use-cases/dlstreamer && $(MAKE) --no-print-directory run
 
 down-gst:
-	@cd ./use-cases/dlstreamer && make down
+	@cd ./use-cases/dlstreamer && $(MAKE) --no-print-directory down
+
+build-grpc_python: build-ovms_server
+	@cd ./use-cases/grpc_python && $(MAKE) --no-print-directory build
+
+list-grpc-python-model-names:
+	@cd ./use-cases/grpc_python && $(MAKE) --no-print-directory model-names
+
+run-grpc_python: prepare-inputs list-grpc-python-model-names
+	@cd ./use-cases/grpc_python && $(MAKE) --no-print-directory run
+
+down-grpc_python:
+	@cd ./use-cases/grpc_python && $(MAKE) --no-print-directory down

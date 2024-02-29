@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (C) 2023 Intel Corporation.
+# Copyright (C) 2024 Intel Corporation.
 #
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -12,5 +12,5 @@ then
     echo $ovms_jsonCfg > /config/config.json
 fi
 
-PORT="${PORT:=8090}"
+PORT="${PORT:=9001}"
 /ovms/bin/ovms --config_path /config/config.json --port $PORT

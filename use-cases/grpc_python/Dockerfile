@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2023 Intel Corporation.
+# Copyright (C) 2024 Intel Corporation.
 #
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -22,3 +22,4 @@ WORKDIR /model_server/client/python/kserve-api/samples
 RUN pip3 install -r requirements.txt; pip3 install opencv-python
 WORKDIR /app
 COPY . .
+RUN chmod +x /app/entrypoint.sh
