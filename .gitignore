@@ -5,5 +5,4 @@ docs/sitemap.xml.gz
 docs/*
 
 benchmark-scripts/results/
-models/
 results/

@@ -1,0 +1,9 @@
+#
+# Copyright (C) 2023 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+FROM openvino/ubuntu20_data_runtime:2021.4.2
+
+COPY /sample-media /sample-media/

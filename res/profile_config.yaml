@@ -1,0 +1,5 @@
+Containers:
+ - Name: GST
+   DockerImage: dlstreamer:dev
+   EnvironmentVariableFiles: yolov5-cpu.env
+   Entrypoint: /script/entrypoint.sh --pipeline_script_choice yolov5s.sh
