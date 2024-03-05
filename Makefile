@@ -49,7 +49,7 @@ download-sample-media:
 build-gst:
 	@cd ./use-cases/dlstreamer && $(MAKE) --no-print-directory build
 
-prepare-inputs: download-models download-sample-media
+prepare-inputs: update-submodules download-models download-sample-media
 
 run-gst: prepare-inputs
 	@cd ./use-cases/dlstreamer && $(MAKE) --no-print-directory run
