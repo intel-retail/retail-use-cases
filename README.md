@@ -8,15 +8,19 @@
 ./core-services/profile-launcher/profile-launcher --configdir ./use-cases/grpc_python/res --inputsrc /dev/video4 --target_device CPU
 ```
 
+---
 
-## build dlstreamer gst Docker image
+## 1. dlstreamer gst use case:
 
-(cd use-cases/dlstreamer; make build)
+### build dlstreamer gst Docker image
 
+- to build run:
 
-## run dlstreamer gst use cases
+    ```bash
+    make build-gst
+    ```
 
-### example run commands
+### run dlstreamer gst use cases
 
 - run one gst dlstreamer pipeline and use the default object detection only (yolov5s.sh)
 
@@ -48,7 +52,50 @@
     make clean-results
     ```
 
+---
 
+## 2. grpc_python use case:
+
+### build grpc_python Docker image
+
+- to build run:
+
+    ```bash
+    make build-grpc_python
+    ```
+
+### run grpc_python use cases
+
+- run one grpc_python pipeline and use the default model (instance-segmentation-security-1040)
+
+    ```bash
+    make run-grpc_python
+    ```
+- show the supported MODEL_NAME for grpc_python
+
+    ```bash
+    make list-grpc-python-model-names
+    ```
+
+- run three grpc_python pipelines and use yolov5s model
+
+    ```bash
+    PIPELINE_COUNT=3 MODEL_NAME=yolov5s make run-grpc_python
+    ```
+
+- shutdown Docker containers
+
+    ```bash
+    make down-grpc_python
+    ```
+
+- clean up the output results
+
+    ```bash
+    make clean-results
+    ```
+
+---
 
 ## Disclaimer
 
