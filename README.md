@@ -97,6 +97,98 @@
 
 ---
 
+## 3. gst_capi use cases:
+
+There are three different pipelines for gst_capi use cases: capi_yolov5, capi_yolov5_ensemble, and capi_face_detection.
+
+### build all capi pipeline Docker images
+
+- to build all capis run:
+
+    ```bash
+    make build-all-capis
+    ```
+
+- to build one at a time run:
+
+    - for capi_yolov5
+
+        ```bash
+        make build-capi_yolov5
+        ```
+
+    - for capi_yolov5_ensemble
+
+        ```bash
+        make build-capi_yolov5_ensemble
+        ```
+
+    - for capi_face_detection
+
+        ```bash
+        make build-capi_face_detection
+        ```
+
+### run gst_capi use cases
+
+- run one capi_yolov5 pipeline
+
+    ```bash
+    make run-capi_yolov5
+    ```
+
+- shutdown capi_yolov5
+
+    ```bash
+    make down-capi_yolov5
+    ```
+
+- run one capi_yolov5_ensemble pipeline
+
+    ```bash
+    make run-capi_yolov5_ensemble
+    ```
+
+- shutdown capi_yolov5_ensemble
+
+    ```bash
+    make down-capi_yolov5_ensemble
+    ```
+
+- run one capi_face_detection pipeline
+
+    ```bash
+    make run-capi_face_detection
+    ```
+
+- shutdown capi_face_detection
+
+    ```bash
+    make down-capi_face_detection
+    ```
+
+- run two capi_yolov5_ensemble pipelines
+
+    ```bash
+    PIPELINE_COUNT=2 make run-capi_yolov5_ensemble
+    ```
+
+- shutdown Docker containers
+
+    ```bash
+    make down-capi_yolov5
+    make down-capi_yolov5_ensemble
+    make down-capi_face_detection
+    ```
+
+- clean up the output results
+
+    ```bash
+    make clean-results
+    ```
+
+---
+
 ## Disclaimer
 
 GStreamer is an open source framework licensed under LGPL. See https://gstreamer.freedesktop.org/documentation/frequently-asked-questions/licensing.html?gi-language=c.  You are solely responsible for determining if your use of Gstreamer requires any additional licenses.  Intel is not responsible for obtaining any such licenses, nor liable for any licensing fees due, in connection with your use of Gstreamer.

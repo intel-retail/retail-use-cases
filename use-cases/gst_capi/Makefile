@@ -1,11 +1,28 @@
-# Copyright © 2023 Intel Corporation. All rights reserved.
+# Copyright © 2024 Intel Corporation. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 
 .PHONY: build build_face_detection build_capi_yolov5 build_capi_yolov5_ensemble
+.PHONY: run_capi_yolov5 down_capi_yolov5
+.PHONY: run_capi_yolov5_ensemble down_capi_yolov5_ensemble
+.PHONY: run_capi_face_detection down_capi_face_detection
 
+# initial default values
 OVMS_CPP_DOCKER_IMAGE ?= openvino/model_server
 OVMS_CPP_IMAGE_TAG ?= latest
 DGPU_TYPE ?= arc # arc|flex
+DOCKER_COMPOSE ?= docker-compose.yml
+PIPELINE_COUNT ?= 1
+CAMERA_SIMULATOR_COMPOSE ?= add_camera-simulator.yml
+
+# utility functions
+define copy_ovms_config
+	cd ../ovms_server && sudo cp ./config.json ../../models/$(1)
+endef
+
+define clean_ovms_config
+	sudo rm -f ../../models/$(1) | true
+endef
+
 
 build: build_face_detection build_capi_yolov5 build_capi_yolov5_ensemble
 
@@ -43,3 +60,36 @@ build_capi_yolov5_ensemble:
 		--build-arg PIPELINE_NAME=capi_yolov5_ensemble \
 		--progress=plain \
 		-t $(OVMS_CPP_DOCKER_IMAGE)-capi-gst-ovms-capi_yolov5_ensemble:$(OVMS_CPP_IMAGE_TAG)
+
+gen_capi_yolov5:
+	@PIPELINE_COUNT=${PIPELINE_COUNT} docker compose -f $(CAMERA_SIMULATOR_COMPOSE) -f add_replicas_capi_yolov5.yml convert > $(DOCKER_COMPOSE)
+
+run_capi_yolov5: gen_capi_yolov5
+	@$(call copy_ovms_config,config_capi_yolov5.json)
+	PIPELINE_COUNT=$(PIPELINE_COUNT) docker compose -f $(DOCKER_COMPOSE) up -d
+
+down_capi_yolov5:
+	PIPELINE_COUNT=$(PIPELINE_COUNT) docker compose -f $(DOCKER_COMPOSE) down
+	@$(call clean_ovms_config,config_capi_yolov5.json)
+
+gen_capi_yolov5_ensemble:
+	@PIPELINE_COUNT=${PIPELINE_COUNT} docker compose -f $(CAMERA_SIMULATOR_COMPOSE) -f add_replicas_capi_yolov5_ensemble.yml convert > $(DOCKER_COMPOSE)
+
+run_capi_yolov5_ensemble: gen_capi_yolov5_ensemble
+	@$(call copy_ovms_config,config_capi_yolov5_ensemble.json)
+	PIPELINE_COUNT=$(PIPELINE_COUNT) docker compose -f $(DOCKER_COMPOSE) up -d
+
+down_capi_yolov5_ensemble:
+	PIPELINE_COUNT=$(PIPELINE_COUNT) docker compose -f $(DOCKER_COMPOSE) down
+	@$(call clean_ovms_config,config_capi_yolov5_ensemble.json)
+
+gen_capi_face_detection:
+	@PIPELINE_COUNT=${PIPELINE_COUNT} docker compose -f $(CAMERA_SIMULATOR_COMPOSE) -f add_replicas_capi_face_detection.yml convert > $(DOCKER_COMPOSE)
+
+run_capi_face_detection: gen_capi_face_detection
+	@$(call copy_ovms_config,config_capi_face_detection.json)
+	PIPELINE_COUNT=$(PIPELINE_COUNT) docker compose -f $(DOCKER_COMPOSE) up -d
+
+down_capi_face_detection:
+	PIPELINE_COUNT=$(PIPELINE_COUNT) docker compose -f $(DOCKER_COMPOSE) down
+	@$(call clean_ovms_config,config_capi_face_detection.json)

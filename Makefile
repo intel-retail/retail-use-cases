@@ -4,6 +4,10 @@
 .PHONY: download-sample-media
 .PHONY: build-gst run-gst down-gst
 .PHONY: build-grpc_python list-grpc-python-model-names run-grpc_python down-grpc_python
+.PHONY: build-capi_yolov5 run-capi_yolov5 down-capi_yolov5
+.PHONY: build-capi_yolov5_ensemble run-capi_yolov5_ensemble down-capi_yolov5_ensemble
+.PHONY: build-capi_face_detection run-capi_face_detection down-capi_face_detection
+.PHONY: build-all-capis
 .PHONY: clean-results
 
 USECASES= \
@@ -68,3 +72,33 @@ run-grpc_python: prepare-inputs list-grpc-python-model-names
 
 down-grpc_python:
 	@cd ./use-cases/grpc_python && $(MAKE) --no-print-directory down
+
+build-capi_yolov5:
+	@cd ./use-cases/gst_capi && $(MAKE) --no-print-directory build_capi_yolov5
+
+run-capi_yolov5:
+	@cd ./use-cases/gst_capi && $(MAKE) --no-print-directory DOCKER_COMPOSE=docker-compose_replicas_capi_yolov5.yml run_capi_yolov5
+
+down-capi_yolov5:
+	@cd ./use-cases/gst_capi && $(MAKE) --no-print-directory DOCKER_COMPOSE=docker-compose_replicas_capi_yolov5.yml down_capi_yolov5
+
+build-capi_yolov5_ensemble:
+	@cd ./use-cases/gst_capi && $(MAKE) --no-print-directory build_capi_yolov5_ensemble
+
+run-capi_yolov5_ensemble:
+	@cd ./use-cases/gst_capi && $(MAKE) --no-print-directory DOCKER_COMPOSE=docker-compose_replicas_capi_yolov5_ensemble.yml run_capi_yolov5_ensemble
+
+down-capi_yolov5_ensemble:
+	@cd ./use-cases/gst_capi && $(MAKE) --no-print-directory DOCKER_COMPOSE=docker-compose_replicas_capi_yolov5_ensemble.yml down_capi_yolov5_ensemble
+
+build-capi_face_detection:
+	@cd ./use-cases/gst_capi && $(MAKE) --no-print-directory build_face_detection
+
+run-capi_face_detection:
+	@cd ./use-cases/gst_capi && $(MAKE) --no-print-directory DOCKER_COMPOSE=docker-compose_replicas_capi_face_detection.yml run_capi_face_detection
+
+down-capi_face_detection:
+	@cd ./use-cases/gst_capi && $(MAKE) --no-print-directory DOCKER_COMPOSE=docker-compose_replicas_capi_face_detection.yml down_capi_face_detection
+
+build-all-capis:
+	@cd ./use-cases/gst_capi && $(MAKE) --no-print-directory build
