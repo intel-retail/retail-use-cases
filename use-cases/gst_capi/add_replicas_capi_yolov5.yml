@@ -1,0 +1,36 @@
+#
+# Copyright (C) 2024 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '3.7'
+services:
+  CapiYolov5:
+    image: openvino/model_server-capi-gst-ovms-capi_yolov5:latest
+    deploy:
+      mode: replicated
+      replicas: ${PIPELINE_COUNT}
+    network_mode: "host"
+    user: root
+    privileged: true
+    entrypoint: ./run_gst_capi.sh
+    env_file:
+      - ./res/capi_yolov5.env
+    environment:
+      - CONTAINER_NAME="capi_yolov5"
+      - INPUTSRC=rtsp://localhost:8554/camera_0
+      - DEVICE=CPU
+      - RENDER_MODE=0 #RENDER_MODE=1 will work only after running xhost +local:docker
+      - DISPLAY=$DISPLAY
+      - OVMS_MODEL_CONFIG_JSON=/models/config_capi_yolov5.json
+      - PIPELINE_PROFILE=capi_yolov5
+    depends_on:
+      - camera-simulator0
+    volumes:
+      - ../../results:/tmp/results
+      - ~/.Xauthority:/home/dlstreamer/.Xauthority
+      - /tmp/.X11-unix
+      - ~/.cl-cache:/home/pipeline-server/.cl-cache
+      - ./res/:/home/pipeline-server/envs
+      - ../../models:/models

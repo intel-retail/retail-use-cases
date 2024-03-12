@@ -1,0 +1,36 @@
+#
+# Copyright (C) 2024 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '3.7'
+services:
+  CapiFaceDetection:
+    image: openvino/model_server-capi-gst-ovms-face_detection:latest
+    deploy:
+      mode: replicated
+      replicas: ${PIPELINE_COUNT}
+    network_mode: "host"
+    user: root
+    privileged: true
+    entrypoint: ./run_gst_capi.sh
+    env_file:
+      - ./res/capi_face_detection.env
+    environment:
+      - CONTAINER_NAME="capi_face_detection"
+      - INPUTSRC=rtsp://localhost:8554/camera_2
+      - DEVICE=GPU
+      - RENDER_MODE=0 #RENDER_MODE=1 will work only after running xhost +local:docker
+      - DISPLAY=$DISPLAY
+      - OVMS_MODEL_CONFIG_JSON=/models/config_capi_face_detection.json
+      - PIPELINE_PROFILE=capi_face_detection
+    depends_on:
+      - camera-simulator2
+    volumes:
+      - ../../results:/tmp/results
+      - ~/.Xauthority:/home/dlstreamer/.Xauthority
+      - /tmp/.X11-unix
+      - ~/.cl-cache:/home/pipeline-server/.cl-cache
+      - ./res/:/home/pipeline-server/envs
+      - ../../models:/models

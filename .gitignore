@@ -7,3 +7,7 @@ docs/*
 benchmark-scripts/results/
 models/
 results/
+
+use-cases/gst_capi/docker-compose_replicas_capi_yolov5.yml
+use-cases/gst_capi/docker-compose_replicas_capi_yolov5_ensemble.yml
+use-cases/gst_capi/docker-compose_replicas_capi_face_detection.yml
