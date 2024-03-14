@@ -1,5 +1,14 @@
 # Retail Use Cases
 
+There are various use cases available, click one each hyperlink to find out more details:
+- [dlstreamer gst](#dlstreamer-gst-use-case)
+- [grpc python](#grpc_python-use-case)
+- [gst c-api](#gst_capi-use-cases)
+- [demos grpc OVMS](#demos-use-case)
+
+---
+---
+
 ## example run commands from profile-launcher (WILL BE DEPRECATED)
 
 ```bash
@@ -10,7 +19,7 @@
 
 ---
 
-## 1. dlstreamer gst use case:
+## dlstreamer gst use case:
 
 ### build dlstreamer gst Docker image
 
@@ -54,7 +63,7 @@
 
 ---
 
-## 2. grpc_python use case:
+## grpc_python use case:
 
 ### build grpc_python Docker image
 
@@ -97,7 +106,7 @@
 
 ---
 
-## 3. gst_capi use cases:
+## gst_capi use cases:
 
 There are three different pipelines for gst_capi use cases: capi_yolov5, capi_yolov5_ensemble, and capi_face_detection.
 
@@ -179,6 +188,57 @@ There are three different pipelines for gst_capi use cases: capi_yolov5, capi_yo
     make down-capi_yolov5
     make down-capi_yolov5_ensemble
     make down-capi_face_detection
+    ```
+
+- clean up the output results
+
+    ```bash
+    make clean-results
+    ```
+
+---
+
+## demos use case:
+
+There are three different pipelines for demos use case: classification, instance_segmentation, and object_detection.
+
+### build all demos Docker image
+
+- to build run:
+
+    ```bash
+    make build-demos
+    ```
+
+### run demos use case
+
+- run one classification pipeline
+
+    ```bash
+    make run-demo-classification
+    ```
+- run one instance segmentation pipeline
+
+    ```bash
+    make run-demo-instance-segmentation
+    ```
+
+- run two object detection pipelines
+
+    ```bash
+    PIPELINE_COUNT=2 make run-demo-object-detection
+    ```
+
+- shutdown classification pipeline Docker container
+
+    ```bash
+    make down-demo-classification
+    ```
+
+- shutdown all Docker containers
+
+    ```bash
+    make down-demos-all
     ```
 
 - clean up the output results

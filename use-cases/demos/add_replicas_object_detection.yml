@@ -1,0 +1,28 @@
+#
+# Copyright (C) 2024 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '3.7'
+services:
+  OvmsDemoObjectDetection:
+    image: python-demo:dev
+    deploy:
+      mode: replicated
+      replicas: ${PIPELINE_COUNT}
+    network_mode: "host"
+    entrypoint: /app/object_detection/python/entrypoint.sh
+    env_file:
+      - ./res/object_detection.env
+    environment:
+      - CONTAINER_NAME="demos-OvmsDemoObjectDetection-1"
+      - GRPC_PORT=9001
+      - INPUTSRC=rtsp://localhost:8554/camera_0
+      - OVMS_INIT_TIME_IN_SECOND=10
+      - RENDER_MODE=0 #RENDER_MODE=1 will work only after running xhost +local:docker
+      - DISPLAY=$DISPLAY
+    volumes:
+      - ../../results:/tmp/results
+      - ~/.Xauthority:/home/dlstreamer/.Xauthority
+      - /tmp/.X11-unix
