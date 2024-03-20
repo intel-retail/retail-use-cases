@@ -57,7 +57,6 @@ else
     ./grpc-go -i $INPUTSRC -u 127.0.0.1:$GRPC_PORT -h 0.0.0.0:$displayPortNum 2>&1  | tee >/tmp/results/r"$cid"_"$PROFILE_NAME".jsonl >(stdbuf -oL sed -n -e 's/^.*fps: //p' | stdbuf -oL cut -d , -f 1 > /tmp/results/pipeline"$cid"_"$PROFILE_NAME".log)
 fi
 
-
 hasError5=$(grep "ERROR(5)-" /tmp/results/r"$cid"_"$PROFILE_NAME".jsonl)
 MAX_RETRIES=10
 retry_cnt=1
