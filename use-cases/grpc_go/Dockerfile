@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2023 Intel Corporation.
+# Copyright (C) 2024 Intel Corporation.
 #
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -7,7 +7,7 @@
 FROM gocv/opencv:4.7.0 AS builder
 
 RUN apt-get update && \
-    apt-get -y install git unzip build-essential autoconf libtool protobuf-compiler libprotobuf-dev --fix-missing && \
+    apt-get -y install git unzip build-essential autoconf libtool protobuf-compiler libprotobuf-dev net-tools --fix-missing && \
     rm -rf /var/lib/apt/lists/*
 
 RUN mkdir /app

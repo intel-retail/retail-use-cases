@@ -5,18 +5,9 @@ There are various use cases available, click one each hyperlink to find out more
 - [grpc python](#grpc_python-use-case)
 - [gst c-api](#gst_capi-use-cases)
 - [demos grpc OVMS](#demos-use-case)
+- [grpc go](#grpc_go-use-case)
 
 ---
----
-
-## example run commands from profile-launcher (WILL BE DEPRECATED)
-
-```bash
-./core-services/profile-launcher/profile-launcher --configdir ./use-cases/dlstreamer/res --inputsrc /dev/video4 --target_device CPU
-
-./core-services/profile-launcher/profile-launcher --configdir ./use-cases/grpc_python/res --inputsrc /dev/video4 --target_device CPU
-```
-
 ---
 
 ## dlstreamer gst use case:
@@ -239,6 +230,44 @@ There are three different pipelines for demos use case: classification, instance
 
     ```bash
     make down-demos-all
+    ```
+
+- clean up the output results
+
+    ```bash
+    make clean-results
+    ```
+
+---
+
+## grpc_go use case:
+
+### build grpc_go Docker image
+
+- to build run:
+
+    ```bash
+    make build-grpc-go
+    ```
+
+### run grpc_go use cases
+
+- run one grpc_go pipeline
+
+    ```bash
+    make run-grpc-go
+    ```
+
+- run two grpc_go pipelines
+
+    ```bash
+    PIPELINE_COUNT=2 make run-grpc-go
+    ```
+
+- shutdown Docker containers
+
+    ```bash
+    make down-grpc-go
     ```
 
 - clean up the output results
