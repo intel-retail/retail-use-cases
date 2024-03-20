@@ -8,6 +8,8 @@
 .PHONY: build-capi_yolov5_ensemble run-capi_yolov5_ensemble down-capi_yolov5_ensemble
 .PHONY: build-capi_face_detection run-capi_face_detection down-capi_face_detection
 .PHONY: build-all-capis
+.PHONY: build-demos down-demos-all
+.PHONY: run-demo-classification down-demo-classification run-demo-instance-segmentation down-demo-instance-segmentation run-demo-object-detection down-demo-object-detection
 .PHONY: clean-results
 
 USECASES= \
@@ -102,3 +104,27 @@ down-capi_face_detection:
 
 build-all-capis:
 	@cd ./use-cases/gst_capi && $(MAKE) --no-print-directory build
+
+build-demos:
+	@cd ./use-cases/demos && $(MAKE) --no-print-directory build
+
+run-demo-classification:
+	@cd ./use-cases/demos && $(MAKE) --no-print-directory DOCKER_COMPOSE=docker-compose_replicas_demo_classification.yml run_classification
+
+down-demo-classification:
+	@cd ./use-cases/demos && $(MAKE) --no-print-directory down_classification
+
+run-demo-instance-segmentation:
+	@cd ./use-cases/demos && $(MAKE) --no-print-directory DOCKER_COMPOSE=docker-compose_replicas_demo_instance_segmentation.yml run_instance_segmentation
+
+down-demo-instance-segmentation:
+	@cd ./use-cases/demos && $(MAKE) --no-print-directory down_instance_segmentation
+
+run-demo-object-detection:
+	@cd ./use-cases/demos && $(MAKE) --no-print-directory DOCKER_COMPOSE=docker-compose_replicas_demo_object_detection.yml run_object_detection
+
+down-demo-object-detection:
+	@cd ./use-cases/demos && $(MAKE) --no-print-directory down_object_detection
+
+down-demos-all:
+	@cd ./use-cases/demos && $(MAKE) --no-print-directory compose_down_all
