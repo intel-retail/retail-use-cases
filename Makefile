@@ -80,28 +80,28 @@ build-capi_yolov5:
 	@cd ./use-cases/gst_capi && $(MAKE) --no-print-directory build_capi_yolov5
 
 run-capi_yolov5:
-	@cd ./use-cases/gst_capi && $(MAKE) --no-print-directory DOCKER_COMPOSE=docker-compose_replicas_capi_yolov5.yml run_capi_yolov5
+	@cd ./use-cases/gst_capi && $(MAKE) --no-print-directory DOCKER_COMPOSE=docker-compose_capi_yolov5.yml run_capi_yolov5
 
 down-capi_yolov5:
-	@cd ./use-cases/gst_capi && $(MAKE) --no-print-directory DOCKER_COMPOSE=docker-compose_replicas_capi_yolov5.yml down_capi_yolov5
+	@cd ./use-cases/gst_capi && $(MAKE) --no-print-directory DOCKER_COMPOSE=docker-compose_capi_yolov5.yml down_capi_yolov5
 
 build-capi_yolov5_ensemble:
 	@cd ./use-cases/gst_capi && $(MAKE) --no-print-directory build_capi_yolov5_ensemble
 
 run-capi_yolov5_ensemble:
-	@cd ./use-cases/gst_capi && $(MAKE) --no-print-directory DOCKER_COMPOSE=docker-compose_replicas_capi_yolov5_ensemble.yml run_capi_yolov5_ensemble
+	@cd ./use-cases/gst_capi && $(MAKE) --no-print-directory DOCKER_COMPOSE=docker-compose_capi_yolov5_ensemble.yml run_capi_yolov5_ensemble
 
 down-capi_yolov5_ensemble:
-	@cd ./use-cases/gst_capi && $(MAKE) --no-print-directory DOCKER_COMPOSE=docker-compose_replicas_capi_yolov5_ensemble.yml down_capi_yolov5_ensemble
+	@cd ./use-cases/gst_capi && $(MAKE) --no-print-directory DOCKER_COMPOSE=docker-compose_capi_yolov5_ensemble.yml down_capi_yolov5_ensemble
 
 build-capi_face_detection:
 	@cd ./use-cases/gst_capi && $(MAKE) --no-print-directory build_face_detection
 
 run-capi_face_detection:
-	@cd ./use-cases/gst_capi && $(MAKE) --no-print-directory DOCKER_COMPOSE=docker-compose_replicas_capi_face_detection.yml run_capi_face_detection
+	@cd ./use-cases/gst_capi && $(MAKE) --no-print-directory DOCKER_COMPOSE=docker-compose_capi_face_detection.yml run_capi_face_detection
 
 down-capi_face_detection:
-	@cd ./use-cases/gst_capi && $(MAKE) --no-print-directory DOCKER_COMPOSE=docker-compose_replicas_capi_face_detection.yml down_capi_face_detection
+	@cd ./use-cases/gst_capi && $(MAKE) --no-print-directory DOCKER_COMPOSE=docker-compose_capi_face_detection.yml down_capi_face_detection
 
 build-all-capis:
 	@cd ./use-cases/gst_capi && $(MAKE) --no-print-directory build
@@ -110,19 +110,19 @@ build-demos:
 	@cd ./use-cases/demos && $(MAKE) --no-print-directory build
 
 run-demo-classification:
-	@cd ./use-cases/demos && $(MAKE) --no-print-directory DOCKER_COMPOSE=docker-compose_replicas_demo_classification.yml run_classification
+	@cd ./use-cases/demos && $(MAKE) --no-print-directory DOCKER_COMPOSE=docker-compose_demo_classification.yml run_classification
 
 down-demo-classification:
 	@cd ./use-cases/demos && $(MAKE) --no-print-directory down_classification
 
 run-demo-instance-segmentation:
-	@cd ./use-cases/demos && $(MAKE) --no-print-directory DOCKER_COMPOSE=docker-compose_replicas_demo_instance_segmentation.yml run_instance_segmentation
+	@cd ./use-cases/demos && $(MAKE) --no-print-directory DOCKER_COMPOSE=docker-compose_demo_instance_segmentation.yml run_instance_segmentation
 
 down-demo-instance-segmentation:
 	@cd ./use-cases/demos && $(MAKE) --no-print-directory down_instance_segmentation
 
 run-demo-object-detection:
-	@cd ./use-cases/demos && $(MAKE) --no-print-directory DOCKER_COMPOSE=docker-compose_replicas_demo_object_detection.yml run_object_detection
+	@cd ./use-cases/demos && $(MAKE) --no-print-directory DOCKER_COMPOSE=docker-compose_demo_object_detection.yml run_object_detection
 
 down-demo-object-detection:
 	@cd ./use-cases/demos && $(MAKE) --no-print-directory down_object_detection

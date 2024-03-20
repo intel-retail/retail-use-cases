@@ -8,9 +8,9 @@ benchmark-scripts/results/
 models/
 results/
 
-use-cases/gst_capi/docker-compose_replicas_capi_yolov5.yml
-use-cases/gst_capi/docker-compose_replicas_capi_yolov5_ensemble.yml
-use-cases/gst_capi/docker-compose_replicas_capi_face_detection.yml
-use-cases/demos/docker-compose_replicas_demo_classification.yml
-use-cases/demos/docker-compose_replicas_demo_instance_segmentation.yml
-use-cases/demos/docker-compose_replicas_demo_object_detection.yml
+use-cases/gst_capi/docker-compose_capi_yolov5.yml
+use-cases/gst_capi/docker-compose_capi_yolov5_ensemble.yml
+use-cases/gst_capi/docker-compose_capi_face_detection.yml
+use-cases/demos/docker-compose_demo_classification.yml
+use-cases/demos/docker-compose_demo_instance_segmentation.yml
+use-cases/demos/docker-compose_demo_object_detection.yml
