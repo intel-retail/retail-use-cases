@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 .PHONY: build build-realsense run down
 
-DOCKER_COMPOSE ?= docker-compose_replicas_gst.yml
+DOCKER_COMPOSE ?= docker-compose_dlstreamer.yml
 PIPELINE_SCRIPT ?= yolov5s.sh
 PIPELINE_COUNT ?= 1
 

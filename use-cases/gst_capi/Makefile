@@ -62,7 +62,7 @@ build_capi_yolov5_ensemble:
 		-t $(OVMS_CPP_DOCKER_IMAGE)-capi-gst-ovms-capi_yolov5_ensemble:$(OVMS_CPP_IMAGE_TAG)
 
 gen_capi_yolov5:
-	@PIPELINE_COUNT=${PIPELINE_COUNT} docker compose -f $(CAMERA_SIMULATOR_COMPOSE) -f add_replicas_capi_yolov5.yml convert > $(DOCKER_COMPOSE)
+	@PIPELINE_COUNT=${PIPELINE_COUNT} docker compose -f $(CAMERA_SIMULATOR_COMPOSE) -f add_gst_capi_yolov5.yml convert > $(DOCKER_COMPOSE)
 
 run_capi_yolov5: gen_capi_yolov5
 	@$(call copy_ovms_config,config_capi_yolov5.json)
@@ -73,7 +73,7 @@ down_capi_yolov5:
 	@$(call clean_ovms_config,config_capi_yolov5.json)
 
 gen_capi_yolov5_ensemble:
-	@PIPELINE_COUNT=${PIPELINE_COUNT} docker compose -f $(CAMERA_SIMULATOR_COMPOSE) -f add_replicas_capi_yolov5_ensemble.yml convert > $(DOCKER_COMPOSE)
+	@PIPELINE_COUNT=${PIPELINE_COUNT} docker compose -f $(CAMERA_SIMULATOR_COMPOSE) -f add_gst_capi_yolov5_ensemble.yml convert > $(DOCKER_COMPOSE)
 
 run_capi_yolov5_ensemble: gen_capi_yolov5_ensemble
 	@$(call copy_ovms_config,config_capi_yolov5_ensemble.json)
@@ -84,7 +84,7 @@ down_capi_yolov5_ensemble:
 	@$(call clean_ovms_config,config_capi_yolov5_ensemble.json)
 
 gen_capi_face_detection:
-	@PIPELINE_COUNT=${PIPELINE_COUNT} docker compose -f $(CAMERA_SIMULATOR_COMPOSE) -f add_replicas_capi_face_detection.yml convert > $(DOCKER_COMPOSE)
+	@PIPELINE_COUNT=${PIPELINE_COUNT} docker compose -f $(CAMERA_SIMULATOR_COMPOSE) -f add_gst_capi_face_detection.yml convert > $(DOCKER_COMPOSE)
 
 run_capi_face_detection: gen_capi_face_detection
 	@$(call copy_ovms_config,config_capi_face_detection.json)

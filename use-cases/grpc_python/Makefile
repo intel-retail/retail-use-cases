@@ -3,7 +3,7 @@
 
 .PHONY: build run down model-names
 
-DOCKER_COMPOSE ?= docker-compose_replicas_grpc_python.yml
+DOCKER_COMPOSE ?= docker-compose_grpc_python.yml
 PIPELINE_COUNT ?= 1
 # supported MODEL_NAME: instance-segmentation-security-1040, bit_64, or yolov5s
 MODEL_NAME ?= instance-segmentation-security-1040
