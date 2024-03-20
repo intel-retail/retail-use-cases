@@ -1,0 +1,70 @@
+#
+# Copyright (C) 2024 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '3.7'
+services:
+  camera-simulator:
+    container_name: camera-simulator
+    image: aler9/rtsp-simple-server
+    ports:
+      - "127.0.0.1:8554:8554"
+  camera-simulator0:
+    build:
+      context: .
+    image: openvino/ubuntu20_data_runtime:2021.4.2
+    container_name: camera-simulator0
+    network_mode: "host"
+    entrypoint: ffmpeg
+    command: "
+        -nostdin
+        -re -stream_loop -1
+        -i /home/pipeline-server/sample-media/coca-cola-4465029-1920-15-bench.mp4
+        -c copy
+        -f rtsp
+        -rtsp_transport
+        tcp
+        rtsp://localhost:8554/camera_0
+        "
+    depends_on:
+      - camera-simulator
+    volumes:
+      - ../../performance-tools/sample-media:/home/pipeline-server/sample-media
+
+  OvmsServer:
+    image: ovms-server:dev
+    container_name: ovms-server0
+    restart: always
+    ports:
+      - '9001:9001'
+      - '9002:9002'
+    volumes:
+      - ../../models:/models
+    environment:
+      - TARGET_DEVICE=CPU
+      - PLATFORM="core"
+      - server_cl_cache_dir=/home/pipeline-server/.cl-cache
+
+  OvmsClientGrpcGo:
+    image: grpc_go:dev
+    deploy:
+      mode: replicated
+      replicas: ${PIPELINE_COUNT}
+    network_mode: "host"
+    entrypoint: /app/entrypoint.sh
+    environment:
+      - CONTAINER_NAME="grpc_go"
+      - GRPC_PORT=9001
+      - INPUTSRC=rtsp://localhost:8554/camera_0
+      - OVMS_INIT_TIME_IN_SECOND=10
+      - RENDER_MODE=0 #RENDER_MODE=1 will work only after running xhost +local:docker
+      - DISPLAY=$DISPLAY
+    depends_on:
+      - OvmsServer
+      - camera-simulator0
+    volumes:
+      - ../../results:/tmp/results
+      - ~/.Xauthority:/home/dlstreamer/.Xauthority
+      - /tmp/.X11-unix

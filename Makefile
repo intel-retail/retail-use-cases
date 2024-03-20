@@ -11,6 +11,7 @@
 .PHONY: build-demos down-demos-all
 .PHONY: run-demo-classification down-demo-classification run-demo-instance-segmentation down-demo-instance-segmentation run-demo-object-detection down-demo-object-detection
 .PHONY: clean-results
+.PHONY: build-grpc-go run-grpc-go down-grpc-go
 
 USECASES= \
 			demos \
@@ -128,3 +129,12 @@ down-demo-object-detection:
 
 down-demos-all:
 	@cd ./use-cases/demos && $(MAKE) --no-print-directory compose_down_all
+	
+build-grpc-go: build-ovms_server
+	@cd ./use-cases/grpc_go && $(MAKE) --no-print-directory build
+
+run-grpc-go: prepare-inputs
+	@cd ./use-cases/grpc_go && $(MAKE) --no-print-directory run
+
+down-grpc-go:
+	@cd ./use-cases/grpc_go && $(MAKE) --no-print-directory down

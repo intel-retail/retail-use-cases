@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) Intel Corporation 2023
+ * Copyright (c) Intel Corporation 2024
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
@@ -12,6 +12,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 	grpc_client "videoProcess/grpc-client"
 	"videoProcess/pkg/ovms"
@@ -62,8 +63,13 @@ func main() {
 
 	// start http server
 	http.Handle("/", stream)
-	log.Fatal("http server failed: ", http.ListenAndServe(FLAGS.Host, nil))
+	httpErr := http.ListenAndServe(FLAGS.Host, nil)
+	if strings.Contains(httpErr.Error(), "address already in use") {
+		fmt.Println("ERROR(5)- http server binding issue: ", httpErr.Error())
+		os.Exit(5)
+	}
 
+	log.Fatal("http server failed: ", httpErr.Error())
 }
 
 func runModelServer(client *grpc_client.GRPCInferenceServiceClient, webcam *gocv.VideoCapture, img *gocv.Mat, modelname string,
