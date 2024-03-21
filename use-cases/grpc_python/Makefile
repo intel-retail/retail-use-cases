@@ -7,6 +7,8 @@ DOCKER_COMPOSE ?= docker-compose_grpc_python.yml
 PIPELINE_COUNT ?= 1
 # supported MODEL_NAME: instance-segmentation-security-1040, bit_64, or yolov5s
 MODEL_NAME ?= instance-segmentation-security-1040
+RETAIL_USE_CASE_ROOT ?= ../..
+RESULTS_DIR ?= ../../results
 
 build:
 	docker build -t grpc_python:dev .
@@ -20,7 +22,7 @@ model-names:
 	@echo
 
 run:
-	PIPELINE_COUNT=$(PIPELINE_COUNT) MODEL_NAME=$(MODEL_NAME) docker compose -f $(DOCKER_COMPOSE) up -d
+	PIPELINE_COUNT=$(PIPELINE_COUNT) MODEL_NAME=$(MODEL_NAME) @RETAIL_USE_CASE_ROOT=$(RETAIL_USE_CASE_ROOT) @RESULTS_DIR=$(RESULTS_DIR) docker compose -f $(DOCKER_COMPOSE) up -d
 
 down:
-	PIPELINE_COUNT=$(PIPELINE_COUNT) MODEL_NAME=$(MODEL_NAME) docker compose -f $(DOCKER_COMPOSE) down
+	PIPELINE_COUNT=$(PIPELINE_COUNT) MODEL_NAME=$(MODEL_NAME) @RETAIL_USE_CASE_ROOT=$(RETAIL_USE_CASE_ROOT) @RESULTS_DIR=$(RESULTS_DIR) docker compose -f $(DOCKER_COMPOSE) down

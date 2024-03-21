@@ -20,7 +20,7 @@ OvmsClient:
     DockerImage: python-demo:dev
     ContainerName: classification
     Volumes:
-      - "$RUN_PATH/results:/tmp/results"
+      - "${RESULTS_DIR}:/tmp/results"
       - ~/.Xauthority:/home/dlstreamer/.Xauthority
       - /tmp/.X11-unix
   PipelineScript: ./classification/python/entrypoint.sh

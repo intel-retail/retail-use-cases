@@ -31,7 +31,7 @@ services:
     depends_on:
       - camera-simulator
     volumes:
-      - ../../performance-tools/sample-media:/home/pipeline-server/sample-media
+      - ${RETAIL_USE_CASE_ROOT}/performance-tools/sample-media:/home/pipeline-server/sample-media
 
   OvmsServer:
     image: ovms-server:dev
@@ -41,7 +41,7 @@ services:
       - '9001:9001'
       - '9002:9002'
     volumes:
-      - ../../models:/models
+      - ${RETAIL_USE_CASE_ROOT}/models:/models
     environment:
       - TARGET_DEVICE=CPU
       - PLATFORM="core"
