@@ -31,7 +31,7 @@ services:
     depends_on:
       - camera-simulator
     volumes:
-      - ../../performance-tools/sample-media:/home/pipeline-server/sample-media
+      - ${RETAIL_USE_CASE_ROOT}/performance-tools/sample-media:/home/pipeline-server/sample-media
 
   OvmsServer:
     image: ovms-server:dev
@@ -65,6 +65,6 @@ services:
       - OvmsServer
       - camera-simulator0
     volumes:
-      - ../../results:/tmp/results
+      - ${RESULTS_DIR}:/tmp/results
       - ~/.Xauthority:/home/dlstreamer/.Xauthority
       - /tmp/.X11-unix

@@ -34,7 +34,7 @@ services:
     depends_on:
       - camera-simulator
     volumes:
-      - ../../performance-tools/sample-media:/home/pipeline-server/sample-media
+      - ${RETAIL_USE_CASE_ROOT}/performance-tools/sample-media:/home/pipeline-server/sample-media
 
   camera-simulator1:
     build:
@@ -56,7 +56,7 @@ services:
     depends_on:
       - camera-simulator
     volumes:
-      - ../../performance-tools/sample-media:/home/pipeline-server/sample-media
+      - ${RETAIL_USE_CASE_ROOT}/performance-tools/sample-media:/home/pipeline-server/sample-media
 
   camera-simulator2:
     build:
@@ -78,4 +78,4 @@ services:
     depends_on:
       - camera-simulator
     volumes:
-      - ../../performance-tools/sample-media:/home/pipeline-server/sample-media
+      - ${RETAIL_USE_CASE_ROOT}/performance-tools/sample-media:/home/pipeline-server/sample-media
