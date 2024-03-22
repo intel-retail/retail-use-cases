@@ -12,6 +12,7 @@
 .PHONY: run-demo-classification down-demo-classification run-demo-instance-segmentation down-demo-instance-segmentation run-demo-object-detection down-demo-object-detection
 .PHONY: clean-results
 .PHONY: build-grpc-go run-grpc-go down-grpc-go
+.PHONY: run-smoke-tests
 
 USECASES= \
 			demos \
@@ -138,3 +139,10 @@ run-grpc-go: prepare-inputs
 
 down-grpc-go:
 	@cd ./use-cases/grpc_go && $(MAKE) --no-print-directory down
+
+run-smoke-tests:
+	@echo "Running smoke tests for retail use cases"
+	@cd ./smoke-tests && $(MAKE) --no-print-directory run > smoke_tests_output.log
+	@echo "results of smoke tests recorded in the file smoke_tests_output.log"
+	@grep -i "Failed" ./smoke-tests/smoke_tests_output.log || true
+	@grep "===" ./smoke-tests/smoke_tests_output.log || true
