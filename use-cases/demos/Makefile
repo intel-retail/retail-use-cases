@@ -17,31 +17,31 @@ build:
 	docker build --tag python-demo:dev -f Dockerfile .
 
 gen_classification:
-	@PIPELINE_COUNT=${PIPELINE_COUNT} @RETAIL_USE_CASE_ROOT=$(RETAIL_USE_CASE_ROOT) @RESULTS_DIR=$(RESULTS_DIR) docker compose -f $(DEPENDENCY_COMPOSE) -f add_demo_classification.yml convert > $(DOCKER_COMPOSE)
+	@PIPELINE_COUNT=${PIPELINE_COUNT} RETAIL_USE_CASE_ROOT=$(RETAIL_USE_CASE_ROOT) RESULTS_DIR=$(RESULTS_DIR) docker compose -f $(DEPENDENCY_COMPOSE) -f add_demo_classification.yml convert > $(DOCKER_COMPOSE)
 
 run_classification: gen_classification
-	@PIPELINE_COUNT=$(PIPELINE_COUNT) @RETAIL_USE_CASE_ROOT=$(RETAIL_USE_CASE_ROOT) @RESULTS_DIR=$(RESULTS_DIR) docker compose -f $(DOCKER_COMPOSE) up -d
+	@PIPELINE_COUNT=$(PIPELINE_COUNT) RETAIL_USE_CASE_ROOT=$(RETAIL_USE_CASE_ROOT) RESULTS_DIR=$(RESULTS_DIR) docker compose -f $(DOCKER_COMPOSE) up -d
 
 down_classification:
-	@PIPELINE_COUNT=$(PIPELINE_COUNT) @RETAIL_USE_CASE_ROOT=$(RETAIL_USE_CASE_ROOT) @RESULTS_DIR=$(RESULTS_DIR) docker compose -f add_demo_classification.yml down
+	@PIPELINE_COUNT=$(PIPELINE_COUNT) RETAIL_USE_CASE_ROOT=$(RETAIL_USE_CASE_ROOT) RESULTS_DIR=$(RESULTS_DIR) docker compose -f add_demo_classification.yml down
 
 gen_instance_segmentation:
 	@PIPELINE_COUNT=${PIPELINE_COUNT} RETAIL_USE_CASE_ROOT=$(RETAIL_USE_CASE_ROOT) docker compose -f $(DEPENDENCY_COMPOSE) -f add_demo_instance_segmentation.yml convert > $(DOCKER_COMPOSE)
 
 run_instance_segmentation: gen_instance_segmentation
-	@PIPELINE_COUNT=$(PIPELINE_COUNT) @RETAIL_USE_CASE_ROOT=$(RETAIL_USE_CASE_ROOT) @RESULTS_DIR=$(RESULTS_DIR) docker compose -f $(DOCKER_COMPOSE) up -d
+	@PIPELINE_COUNT=$(PIPELINE_COUNT) RETAIL_USE_CASE_ROOT=$(RETAIL_USE_CASE_ROOT) RESULTS_DIR=$(RESULTS_DIR) docker compose -f $(DOCKER_COMPOSE) up -d
 
 down_instance_segmentation:
-	@PIPELINE_COUNT=$(PIPELINE_COUNT) @RETAIL_USE_CASE_ROOT=$(RETAIL_USE_CASE_ROOT) @RESULTS_DIR=$(RESULTS_DIR)docker compose -f add_demo_instance_segmentation.yml down
+	@PIPELINE_COUNT=$(PIPELINE_COUNT) RETAIL_USE_CASE_ROOT=$(RETAIL_USE_CASE_ROOT) RESULTS_DIR=$(RESULTS_DIR)docker compose -f add_demo_instance_segmentation.yml down
 
 gen_object_detection:
-	@PIPELINE_COUNT=${PIPELINE_COUNT} @RETAIL_USE_CASE_ROOT=$(RETAIL_USE_CASE_ROOT) @RESULTS_DIR=$(RESULTS_DIR) docker compose -f $(DEPENDENCY_COMPOSE) -f add_demo_object_detection.yml convert > $(DOCKER_COMPOSE)
+	@PIPELINE_COUNT=${PIPELINE_COUNT} RETAIL_USE_CASE_ROOT=$(RETAIL_USE_CASE_ROOT) RESULTS_DIR=$(RESULTS_DIR) docker compose -f $(DEPENDENCY_COMPOSE) -f add_demo_object_detection.yml convert > $(DOCKER_COMPOSE)
 
 run_object_detection: gen_object_detection
-	@PIPELINE_COUNT=$(PIPELINE_COUNT) @RETAIL_USE_CASE_ROOT=$(RETAIL_USE_CASE_ROOT) @RESULTS_DIR=$(RESULTS_DIR) docker compose -f $(DOCKER_COMPOSE) up -d
+	@PIPELINE_COUNT=$(PIPELINE_COUNT) RETAIL_USE_CASE_ROOT=$(RETAIL_USE_CASE_ROOT) RESULTS_DIR=$(RESULTS_DIR) docker compose -f $(DOCKER_COMPOSE) up -d
 
 down_object_detection:
-	@PIPELINE_COUNT=$(PIPELINE_COUNT) @RETAIL_USE_CASE_ROOT=$(RETAIL_USE_CASE_ROOT) @RESULTS_DIR=$(RESULTS_DIR) docker compose -f add_demo_object_detection.yml down
+	@PIPELINE_COUNT=$(PIPELINE_COUNT) RETAIL_USE_CASE_ROOT=$(RETAIL_USE_CASE_ROOT) RESULTS_DIR=$(RESULTS_DIR) docker compose -f add_demo_object_detection.yml down
 
 compose_down_all: down_classification down_instance_segmentation down_object_detection
 	@docker compose -f $(DEPENDENCY_COMPOSE) down
