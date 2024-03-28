@@ -28,9 +28,9 @@ services:
     depends_on:
       - camera-simulator0
     volumes:
-      - ../../results:/tmp/results
+      - ${RESULTS_DIR}:/tmp/results
       - ~/.Xauthority:/home/dlstreamer/.Xauthority
       - /tmp/.X11-unix
       - ~/.cl-cache:/home/pipeline-server/.cl-cache
       - ./res/:/home/pipeline-server/envs
-      - ../../models:/models
+      - ${RETAIL_USE_CASE_ROOT}/models:/models
