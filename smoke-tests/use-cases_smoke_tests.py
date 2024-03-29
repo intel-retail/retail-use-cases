@@ -200,8 +200,10 @@ def test_grpc_go(envs):
 
 def main():
     print("retail-use-cases smoke testing starting...")
-    run_command('pwd')
     env_vars = os.environ.copy()
+    env_vars["RETAIL_USE_CASE_ROOT"] = os.path.join(os.path.curdir, '..')
+    env_vars["RESULTS_DIR"] = os.path.join(os.path.curdir, '..', 'results')
+    run_command('pwd', env_vars)
     print("TEST_DIR:", env_vars["TEST_DIR"])
     test_dir = env_vars["TEST_DIR"]
     os.chdir(test_dir)

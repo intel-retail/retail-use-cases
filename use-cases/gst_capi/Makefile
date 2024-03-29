@@ -64,34 +64,34 @@ build_capi_yolov5_ensemble:
 		-t $(OVMS_CPP_DOCKER_IMAGE)-capi-gst-ovms-capi_yolov5_ensemble:$(OVMS_CPP_IMAGE_TAG)
 
 gen_capi_yolov5:
-	@PIPELINE_COUNT=${PIPELINE_COUNT} RETAIL_USE_CASE_ROOT=$(RETAIL_USE_CASE_ROOT) RESULTS_DIR=$(RESULTS_DIR) docker compose -f $(CAMERA_SIMULATOR_COMPOSE) -f add_gst_capi_yolov5.yml convert > $(DOCKER_COMPOSE)
+	@PIPELINE_COUNT=${PIPELINE_COUNT} RETAIL_USE_CASE_ROOT="$(RETAIL_USE_CASE_ROOT)" RESULTS_DIR="$(RESULTS_DIR)" docker compose -f $(CAMERA_SIMULATOR_COMPOSE) -f add_gst_capi_yolov5.yml convert > $(DOCKER_COMPOSE)
 
 run_capi_yolov5: gen_capi_yolov5
 	@$(call copy_ovms_config,config_capi_yolov5.json)
 	PIPELINE_COUNT=$(PIPELINE_COUNT) RETAIL_USE_CASE_ROOT=$(RETAIL_USE_CASE_ROOT) docker compose -f $(DOCKER_COMPOSE) up -d
 
 down_capi_yolov5:
-	PIPELINE_COUNT=$(PIPELINE_COUNT) RETAIL_USE_CASE_ROOT=$(RETAIL_USE_CASE_ROOT) RESULTS_DIR=$(RESULTS_DIR) docker compose -f $(DOCKER_COMPOSE) down
+	PIPELINE_COUNT=$(PIPELINE_COUNT) RETAIL_USE_CASE_ROOT="$(RETAIL_USE_CASE_ROOT)" RESULTS_DIR="$(RESULTS_DIR)" docker compose -f $(DOCKER_COMPOSE) down
 	@$(call clean_ovms_config,config_capi_yolov5.json)
 
 gen_capi_yolov5_ensemble:
-	@PIPELINE_COUNT=${PIPELINE_COUNT} RETAIL_USE_CASE_ROOT=$(RETAIL_USE_CASE_ROOT) RESULTS_DIR=$(RESULTS_DIR) docker compose -f $(CAMERA_SIMULATOR_COMPOSE) -f add_gst_capi_yolov5_ensemble.yml convert > $(DOCKER_COMPOSE)
+	@PIPELINE_COUNT=${PIPELINE_COUNT} RETAIL_USE_CASE_ROOT="$(RETAIL_USE_CASE_ROOT)" RESULTS_DIR="$(RESULTS_DIR)" docker compose -f $(CAMERA_SIMULATOR_COMPOSE) -f add_gst_capi_yolov5_ensemble.yml convert > $(DOCKER_COMPOSE)
 
 run_capi_yolov5_ensemble: gen_capi_yolov5_ensemble
 	@$(call copy_ovms_config,config_capi_yolov5_ensemble.json)
-	PIPELINE_COUNT=$(PIPELINE_COUNT) RETAIL_USE_CASE_ROOT=$(RETAIL_USE_CASE_ROOT) RESULTS_DIR=$(RESULTS_DIR) docker compose -f $(DOCKER_COMPOSE) up -d
+	PIPELINE_COUNT=$(PIPELINE_COUNT) RETAIL_USE_CASE_ROOT="$(RETAIL_USE_CASE_ROOT)" RESULTS_DIR="$(RESULTS_DIR)" docker compose -f $(DOCKER_COMPOSE) up -d
 
 down_capi_yolov5_ensemble:
-	PIPELINE_COUNT=$(PIPELINE_COUNT) RETAIL_USE_CASE_ROOT=$(RETAIL_USE_CASE_ROOT) RESULTS_DIR=$(RESULTS_DIR) docker compose -f $(DOCKER_COMPOSE) down
+	PIPELINE_COUNT=$(PIPELINE_COUNT) RETAIL_USE_CASE_ROOT="$(RETAIL_USE_CASE_ROOT)" RESULTS_DIR="$(RESULTS_DIR)" docker compose -f $(DOCKER_COMPOSE) down
 	@$(call clean_ovms_config,config_capi_yolov5_ensemble.json)
 
 gen_capi_face_detection:
-	@PIPELINE_COUNT=${PIPELINE_COUNT} RETAIL_USE_CASE_ROOT=$(RETAIL_USE_CASE_ROOT) RESULTS_DIR=$(RESULTS_DIR) docker compose -f $(CAMERA_SIMULATOR_COMPOSE) -f add_gst_capi_face_detection.yml convert > $(DOCKER_COMPOSE)
+	@PIPELINE_COUNT=${PIPELINE_COUNT} RETAIL_USE_CASE_ROOT="$(RETAIL_USE_CASE_ROOT)" RESULTS_DIR="$(RESULTS_DIR)" docker compose -f $(CAMERA_SIMULATOR_COMPOSE) -f add_gst_capi_face_detection.yml convert > $(DOCKER_COMPOSE)
 
 run_capi_face_detection: gen_capi_face_detection
 	@$(call copy_ovms_config,config_capi_face_detection.json)
-	PIPELINE_COUNT=$(PIPELINE_COUNT) RETAIL_USE_CASE_ROOT=$(RETAIL_USE_CASE_ROOT) RESULTS_DIR=$(RESULTS_DIR) docker compose -f $(DOCKER_COMPOSE) up -d
+	PIPELINE_COUNT=$(PIPELINE_COUNT) RETAIL_USE_CASE_ROOT="$(RETAIL_USE_CASE_ROOT)" RESULTS_DIR="$(RESULTS_DIR)" docker compose -f $(DOCKER_COMPOSE) up -d
 
 down_capi_face_detection:
-	PIPELINE_COUNT=$(PIPELINE_COUNT) RETAIL_USE_CASE_ROOT=$(RETAIL_USE_CASE_ROOT) RESULTS_DIR=$(RESULTS_DIR) docker compose -f $(DOCKER_COMPOSE) down
+	PIPELINE_COUNT=$(PIPELINE_COUNT) RETAIL_USE_CASE_ROOT="$(RETAIL_USE_CASE_ROOT)" RESULTS_DIR="$(RESULTS_DIR)" docker compose -f $(DOCKER_COMPOSE) down
 	@$(call clean_ovms_config,config_capi_face_detection.json)
