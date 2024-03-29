@@ -5,12 +5,14 @@
 
 DOCKER_COMPOSE ?= docker-compose_grpc_go.yml
 PIPELINE_COUNT ?= 1
+RETAIL_USE_CASE_ROOT ?= ../..
+RESULTS_DIR ?= ../../results
 
 build:
 	docker build --tag grpc_go:dev .
 
 run:
-	PIPELINE_COUNT=$(PIPELINE_COUNT) docker compose -f $(DOCKER_COMPOSE) up -d
+	PIPELINE_COUNT=$(PIPELINE_COUNT) RETAIL_USE_CASE_ROOT="$(RETAIL_USE_CASE_ROOT)" RESULTS_DIR="$(RESULTS_DIR)" docker compose -f $(DOCKER_COMPOSE) up -d
 
 down:
-	PIPELINE_COUNT=$(PIPELINE_COUNT) docker compose -f $(DOCKER_COMPOSE) down
+	PIPELINE_COUNT=$(PIPELINE_COUNT) RETAIL_USE_CASE_ROOT="$(RETAIL_USE_CASE_ROOT)" RESULTS_DIR="$(RESULTS_DIR)" docker compose -f $(DOCKER_COMPOSE) down

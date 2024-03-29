@@ -7,8 +7,8 @@ OvmsClient:
     Volumes:
       - "$cl_cache_dir:/home/intel/gst-ovms/.cl-cache"
       - /tmp/.X11-unix:/tmp/.X11-unix
-      - "$RUN_PATH/results:/tmp/results"
-      - "$RUN_PATH/models/:/models"
+      - "${RESULTS_DIR}:/tmp/results"
+      - "${MODEL_DIR}:/models"
   PipelineScript: ./run_gst_capi.sh
   PipelineInputArgs: "" # space delimited like we run the script in command and take those input arguments
   EnvironmentVariableFiles:

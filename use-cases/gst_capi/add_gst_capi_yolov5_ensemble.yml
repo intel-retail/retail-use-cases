@@ -24,14 +24,15 @@ services:
       - BARCODE=1
       - RENDER_MODE=0 #RENDER_MODE=1 will work only after running xhost +local:docker
       - DISPLAY=$DISPLAY
-      - OVMS_MODEL_CONFIG_JSON=/models/config_capi_yolov5_ensemble.json
+      - OVMS_MODEL_CONFIG_JSON=/ovms_server/config.json
       - PIPELINE_PROFILE=capi_yolov5_ensemble
     depends_on:
       - camera-simulator1
     volumes:
-      - ../../results:/tmp/results
+      - ${RESULTS_DIR}:/tmp/results
       - ~/.Xauthority:/home/dlstreamer/.Xauthority
       - /tmp/.X11-unix
       - ~/.cl-cache:/home/pipeline-server/.cl-cache
       - ./res/:/home/pipeline-server/envs
-      - ../../models:/models
+      - ${RETAIL_USE_CASE_ROOT}/models:/models
+      - ${RETAIL_USE_CASE_ROOT}/use-cases/ovms_server:/ovms_server
