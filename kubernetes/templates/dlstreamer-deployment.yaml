@@ -2,14 +2,14 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    kompose.cmd: kompose -f compose/docker-compose.yml convert -o kubernetes/
+    kompose.cmd: kompose -f docker-compose.yml convert -o kubernetes -c
     kompose.version: 1.26.0 (40646f47)
   creationTimestamp: null
   labels:
     io.kompose.service: dlstreamer
   name: dlstreamer
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       io.kompose.service: dlstreamer
@@ -18,7 +18,7 @@ spec:
   template:
     metadata:
       annotations:
-        kompose.cmd: kompose -f compose/docker-compose.yml convert -o kubernetes/
+        kompose.cmd: kompose -f docker-compose.yml convert -o kubernetes -c
         kompose.version: 1.26.0 (40646f47)
       creationTimestamp: null
       labels:
@@ -132,7 +132,7 @@ spec:
                 configMapKeyRef:
                   key: PRE_PROCESS
                   name: yolov5-cpu-env
-          image: dlstreamer:dev
+          image: bmcginn/cv-workshop:dls
           name: dlstreamer
           resources: {}
           volumeMounts:

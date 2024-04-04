@@ -1,12 +1,11 @@
 # Copyright © 2023 Intel Corporation. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
-.PHONY: build build-cam-sim build-minikube run-minikube-demo stop-minikube-demo
+.PHONY: build build-cam-sim build-minikube run-minikube-demo stop-minikube-demo helm-convert install-helm uninstall-helm
 
 build:
 	docker build --build-arg HTTPS_PROXY=${HTTPS_PROXY} --build-arg HTTP_PROXY=${HTTP_PROXY} --target build-default -t dlstreamer:dev -f Dockerfile .
 
 build-cam-sim:
-	cp ../../../sample-media/coca-cola-4465029-1920-15-bench.mp4 sample-media/
 	docker build --build-arg HTTPS_PROXY=${HTTPS_PROXY} --build-arg HTTP_PROXY=${HTTP_PROXY} -t cam-sim:dev -f Dockerfile.cam-sim .
 
 build-minikube: build build-cam-sim
@@ -22,3 +21,12 @@ run-minikube-demo: build-minikube
 stop-minikube-demo:
 	cd compose && \
 	kubectl delete -f kubernetes
+
+helm-convert:
+	kompose -f docker-compose.yml convert -o kubernetes -c
+
+install-helm:
+	helm install -f kubernetes/Chart.yaml dls kubernetes
+
+uninstall-helm:
+	helm uninstall dls
