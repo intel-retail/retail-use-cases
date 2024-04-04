@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   annotations:
-    kompose.cmd: kompose -f compose/docker-compose.yml convert -o kubernetes/
+    kompose.cmd: kompose -f docker-compose.yml convert -o kubernetes -c
     kompose.version: 1.26.0 (40646f47)
   creationTimestamp: null
   labels:
