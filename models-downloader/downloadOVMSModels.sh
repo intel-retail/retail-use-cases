@@ -127,7 +127,7 @@ downloadBIT64() {
         BIT_MODEL_DOWNLOADER=$(docker images --format "{{.Repository}}" | grep "bit_model_downloader")
         if [ -z "$BIT_MODEL_DOWNLOADER" ]
         then
-            docker build -f "$MODEL_EXEC_PATH"/../Dockerfile.bitModel -t bit_model_downloader:dev "$MODEL_EXEC_PATH"/../
+            docker build -f "$MODEL_EXEC_PATH"/Dockerfile.bitModel -t bit_model_downloader:dev "$MODEL_EXEC_PATH"/
         fi
         docker run --rm -v "$modelDir/$bitModelDirName/$modelPrecisionFP16INT8"/1:/result bit_model_downloader:dev
         # make the bitModelDirName owned by local user instead of root

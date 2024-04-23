@@ -7,6 +7,7 @@
 .PHONY: build-capi_yolov5 run-capi_yolov5 down-capi_yolov5
 .PHONY: build-capi_yolov5_ensemble run-capi_yolov5_ensemble down-capi_yolov5_ensemble
 .PHONY: build-capi_face_detection run-capi_face_detection down-capi_face_detection
+.PHONY: build-capi_yolov8_ensemble run-capi_yolov8_ensemble down-capi_yolov8_ensemble
 .PHONY: build-all-capis
 .PHONY: build-demos down-demos-all
 .PHONY: run-demo-classification down-demo-classification run-demo-instance-segmentation down-demo-instance-segmentation run-demo-object-detection down-demo-object-detection
@@ -80,7 +81,7 @@ down-grpc_python:
 build-capi_yolov5:
 	@cd ./use-cases/gst_capi && $(MAKE) --no-print-directory build_capi_yolov5
 
-run-capi_yolov5:
+run-capi_yolov5: prepare-inputs
 	@cd ./use-cases/gst_capi && $(MAKE) --no-print-directory DOCKER_COMPOSE=docker-compose_capi_yolov5.yml run_capi_yolov5
 
 down-capi_yolov5:
@@ -89,7 +90,7 @@ down-capi_yolov5:
 build-capi_yolov5_ensemble:
 	@cd ./use-cases/gst_capi && $(MAKE) --no-print-directory build_capi_yolov5_ensemble
 
-run-capi_yolov5_ensemble:
+run-capi_yolov5_ensemble: prepare-inputs
 	@cd ./use-cases/gst_capi && $(MAKE) --no-print-directory DOCKER_COMPOSE=docker-compose_capi_yolov5_ensemble.yml run_capi_yolov5_ensemble
 
 down-capi_yolov5_ensemble:
@@ -98,11 +99,20 @@ down-capi_yolov5_ensemble:
 build-capi_face_detection:
 	@cd ./use-cases/gst_capi && $(MAKE) --no-print-directory build_face_detection
 
-run-capi_face_detection:
+run-capi_face_detection: prepare-inputs
 	@cd ./use-cases/gst_capi && $(MAKE) --no-print-directory DOCKER_COMPOSE=docker-compose_capi_face_detection.yml run_capi_face_detection
 
 down-capi_face_detection:
 	@cd ./use-cases/gst_capi && $(MAKE) --no-print-directory DOCKER_COMPOSE=docker-compose_capi_face_detection.yml down_capi_face_detection
+
+build-capi_yolov8_ensemble:
+	@cd ./use-cases/gst_capi && $(MAKE) --no-print-directory build_capi_yolov8_ensemble
+
+run-capi_yolov8_ensemble: prepare-inputs
+	@cd ./use-cases/gst_capi && $(MAKE) --no-print-directory DOCKER_COMPOSE=docker-compose_capi_yolov8_ensemble.yml run_capi_yolov8_ensemble
+
+down-capi_yolov8_ensemble:
+	@cd ./use-cases/gst_capi && $(MAKE) --no-print-directory DOCKER_COMPOSE=docker-compose_capi_yolov8_ensemble.yml down_capi_yolov8_ensemble
 
 build-all-capis:
 	@cd ./use-cases/gst_capi && $(MAKE) --no-print-directory build
@@ -110,19 +120,19 @@ build-all-capis:
 build-demos:
 	@cd ./use-cases/demos && $(MAKE) --no-print-directory build
 
-run-demo-classification:
+run-demo-classification: prepare-inputs
 	@cd ./use-cases/demos && $(MAKE) --no-print-directory DOCKER_COMPOSE=docker-compose_demo_classification.yml run_classification
 
 down-demo-classification:
 	@cd ./use-cases/demos && $(MAKE) --no-print-directory down_classification
 
-run-demo-instance-segmentation:
+run-demo-instance-segmentation: prepare-inputs
 	@cd ./use-cases/demos && $(MAKE) --no-print-directory DOCKER_COMPOSE=docker-compose_demo_instance_segmentation.yml run_instance_segmentation
 
 down-demo-instance-segmentation:
 	@cd ./use-cases/demos && $(MAKE) --no-print-directory down_instance_segmentation
 
-run-demo-object-detection:
+run-demo-object-detection: prepare-inputs
 	@cd ./use-cases/demos && $(MAKE) --no-print-directory DOCKER_COMPOSE=docker-compose_demo_object_detection.yml run_object_detection
 
 down-demo-object-detection:

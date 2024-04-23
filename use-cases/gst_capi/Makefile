@@ -5,6 +5,7 @@
 .PHONY: run_capi_yolov5 down_capi_yolov5
 .PHONY: run_capi_yolov5_ensemble down_capi_yolov5_ensemble
 .PHONY: run_capi_face_detection down_capi_face_detection
+.PHONY: build_capi_yolov8_ensemble
 
 # initial default values
 OVMS_CPP_DOCKER_IMAGE ?= openvino/model_server
@@ -63,6 +64,9 @@ build_capi_yolov5_ensemble:
 		--progress=plain \
 		-t $(OVMS_CPP_DOCKER_IMAGE)-capi-gst-ovms-capi_yolov5_ensemble:$(OVMS_CPP_IMAGE_TAG)
 
+build_capi_yolov8_ensemble:
+	docker build $(NO_CACHE_OPTION) -f Dockerfile.yolov8 -t $(OVMS_CPP_DOCKER_IMAGE)-capi-gst-ovms-capi_yolov8_ensemble:$(OVMS_CPP_IMAGE_TAG) ./pipelines
+
 gen_capi_yolov5:
 	@PIPELINE_COUNT=${PIPELINE_COUNT} RETAIL_USE_CASE_ROOT="$(RETAIL_USE_CASE_ROOT)" RESULTS_DIR="$(RESULTS_DIR)" docker compose -f $(CAMERA_SIMULATOR_COMPOSE) -f add_gst_capi_yolov5.yml convert > $(DOCKER_COMPOSE)
 
@@ -95,3 +99,12 @@ run_capi_face_detection: gen_capi_face_detection
 down_capi_face_detection:
 	PIPELINE_COUNT=$(PIPELINE_COUNT) RETAIL_USE_CASE_ROOT="$(RETAIL_USE_CASE_ROOT)" RESULTS_DIR="$(RESULTS_DIR)" docker compose -f $(DOCKER_COMPOSE) down
 	@$(call clean_ovms_config,config_capi_face_detection.json)
+
+gen_capi_yolov8_ensemble:
+	@PIPELINE_COUNT=${PIPELINE_COUNT} RETAIL_USE_CASE_ROOT="$(RETAIL_USE_CASE_ROOT)" RESULTS_DIR="$(RESULTS_DIR)" docker compose -f $(CAMERA_SIMULATOR_COMPOSE) -f add_gst_capi_yolov8_ensemble.yml convert > $(DOCKER_COMPOSE)
+
+run_capi_yolov8_ensemble: gen_capi_yolov8_ensemble
+	PIPELINE_COUNT=$(PIPELINE_COUNT) RETAIL_USE_CASE_ROOT="$(RETAIL_USE_CASE_ROOT)" RESULTS_DIR="$(RESULTS_DIR)" docker compose -f $(DOCKER_COMPOSE) up -d
+
+down_capi_yolov8_ensemble:
+	PIPELINE_COUNT=$(PIPELINE_COUNT) RETAIL_USE_CASE_ROOT="$(RETAIL_USE_CASE_ROOT)" RESULTS_DIR="$(RESULTS_DIR)" docker compose -f $(DOCKER_COMPOSE) down
