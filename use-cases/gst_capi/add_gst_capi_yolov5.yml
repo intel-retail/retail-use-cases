@@ -21,7 +21,7 @@ services:
       - CONTAINER_NAME="capi_yolov5"
       - INPUTSRC=rtsp://localhost:8554/camera_0
       - DEVICE=CPU
-      - RENDER_MODE=0 #RENDER_MODE=1 will work only after running xhost +local:docker
+      - RENDER_MODE=${RENDER_MODE} #RENDER_MODE=1 will work only after running xhost +local:docker
       - DISPLAY=$DISPLAY
       - OVMS_MODEL_CONFIG_JSON=/models/config_capi_yolov5.json
       - PIPELINE_PROFILE=capi_yolov5

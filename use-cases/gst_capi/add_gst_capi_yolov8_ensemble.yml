@@ -22,7 +22,7 @@ services:
       - INPUTSRC=rtsp://localhost:8554/camera_1
       - DEVICE=CPU
       - BARCODE=0
-      - RENDER_MODE=0 #RENDER_MODE=1 will work only after running xhost +local:docker
+      - RENDER_MODE=${RENDER_MODE} #RENDER_MODE=1 will work only after running xhost +local:docker
       - DISPLAY=$DISPLAY
       - OVMS_MODEL_CONFIG_JSON=/ovms_server/config-yolov8.json
       - PIPELINE_PROFILE=capi_yolov8_ensemble
