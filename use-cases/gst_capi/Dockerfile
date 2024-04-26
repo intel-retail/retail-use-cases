@@ -35,8 +35,8 @@ RUN wget https://github.com/intel/libvpl/archive/refs/tags/v2023.3.1.zip && \
     cd libvpl-2023.3.1; export VPL_INSTALL_DIR=/opt/intel/onevpl; mkdir _build; mkdir $VPL_INSTALL_DIR; cd _build; cmake .. -DCMAKE_INSTALL_PREFIX=$VPL_INSTALL_DIR; cmake --build . --config Release; cmake --build . --config Release --target install
 
 RUN wget https://github.com/oneapi-src/oneVPL-intel-gpu/archive/refs/tags/intel-onevpl-23.2.4.zip
-RUN unzip intel-onevpl-23.2.4.zip
-RUN cd oneVPL-intel-gpu*; mkdir build; cd build; cmake ..; make -j`nproc`; make install
+RUN unzip intel-onevpl-23.2.4.zip -d intel-onevpl
+RUN cd intel-onevpl/*intel*; mkdir build; cd build; cmake ..; make -j`nproc`; make install
 
 # Build OCV 4.7.0 with GST HW Accel
 RUN opencv_branch=${opencv_branch:-4.7.0}; \
