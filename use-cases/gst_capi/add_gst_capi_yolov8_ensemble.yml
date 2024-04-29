@@ -6,26 +6,26 @@
 
 version: '3.7'
 services:
-  CapiYolov5Ensemble:
-    image: openvino/model_server-capi-gst-ovms-capi_yolov5_ensemble:latest
+  CapiYolov8Ensemble:
+    image: openvino/model_server-capi-gst-ovms-capi_yolov8_ensemble:latest
     deploy:
       mode: replicated
       replicas: ${PIPELINE_COUNT}
     network_mode: "host"
     user: root
     privileged: true
-    entrypoint: ./run_gst_capi.sh
+    entrypoint: /app/gst-ovms/pipelines/yolov8_ensemble/yolo_efficientnet.sh
     env_file:
-      - ./res/capi_yolov5_ensemble.env
+      - ./res/capi_yolov8_ensemble.env
     environment:
-      - CONTAINER_NAME="capi_yolov5_ensemble"
+      - CONTAINER_NAME="capi_yolov8_ensemble"
       - INPUTSRC=rtsp://localhost:8554/camera_1
       - DEVICE=CPU
-      - BARCODE=1
+      - BARCODE=0
       - RENDER_MODE=${RENDER_MODE} #RENDER_MODE=1 will work only after running xhost +local:docker
       - DISPLAY=$DISPLAY
-      - OVMS_MODEL_CONFIG_JSON=/ovms_server/config.json
-      - PIPELINE_PROFILE=capi_yolov5_ensemble
+      - OVMS_MODEL_CONFIG_JSON=/ovms_server/config-yolov8.json
+      - PIPELINE_PROFILE=capi_yolov8_ensemble
     depends_on:
       - camera-simulator1
     volumes:
@@ -35,4 +35,4 @@ services:
       - ~/.cl-cache:/home/pipeline-server/.cl-cache
       - ./res/:/home/pipeline-server/envs
       - ${RETAIL_USE_CASE_ROOT}/models:/models
-      - ${RETAIL_USE_CASE_ROOT}/use-cases/ovms_server:/ovms_server
+      - ${RETAIL_USE_CASE_ROOT}/use-cases/gst_capi/res/yolov8:/ovms_server
