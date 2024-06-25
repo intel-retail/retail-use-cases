@@ -14,6 +14,7 @@
 .PHONY: clean-results
 .PHONY: build-grpc-go run-grpc-go down-grpc-go
 .PHONY: run-smoke-tests
+.PHONY: render
 
 USECASES= \
 			demos \
@@ -58,7 +59,7 @@ download-sample-media:
 build-gst:
 	@cd ./use-cases/dlstreamer && $(MAKE) --no-print-directory build
 
-prepare-inputs: update-submodules download-models download-sample-media
+prepare-inputs: update-submodules download-models download-sample-media render
 
 run-gst: prepare-inputs
 	@cd ./use-cases/dlstreamer && $(MAKE) --no-print-directory run
@@ -156,3 +157,6 @@ run-smoke-tests:
 	@echo "results of smoke tests recorded in the file smoke_tests_output.log"
 	@grep -i "Failed" ./smoke-tests/smoke_tests_output.log || true
 	@grep "===" ./smoke-tests/smoke_tests_output.log || true
+
+render: 
+	xhost +local:docker
