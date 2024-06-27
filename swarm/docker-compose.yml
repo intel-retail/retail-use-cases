@@ -3,9 +3,6 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 #
-
-
- ## Current Developer Toolbox doesn't support environment files, make sure to remove any files or environment variables starting with $
 version: '3.7'
 services:
   camera-simulator:
