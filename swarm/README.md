@@ -45,14 +45,14 @@ This command will output something like the following, including a docker swarm 
 ```
 To add a worker to this swarm, run the following command:
 
-    docker swarm join --token SWMTKN-1-49nj1cmql0... 192.168.99.100:2377
+    docker swarm join --token [TOKEN] 192.168.99.100:2377
 ```
 
 On the new machine that you want to add as a worker node, run the docker swarm join command that you copied from the manager node. It should look something like this:
 
 
 ```
-docker swarm join --token SWMTKN-1-49nj1cmql0... 192.168.99.100:2377
+docker swarm join --token [TOKEN] 192.168.99.100:2377
 ```
 
 Make sure to replace the token and IP address with the actual values you got from your manager node. This command will connect the worker node to the Docker Swarm managed by the manager node.
