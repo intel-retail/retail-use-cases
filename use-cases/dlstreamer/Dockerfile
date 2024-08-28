@@ -4,8 +4,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-#FROM intel/dlstreamer:2022.2.0-ubuntu20-gpu815 as base
-FROM intel/dlstreamer:2023.0.0-ubuntu22-gpu682-dpcpp as base
+FROM intel/dlstreamer:2024.1.1-dev-ubuntu22 as base
 USER root
 
 FROM base as build-default
