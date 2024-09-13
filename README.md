@@ -1,5 +1,8 @@
 # Retail Use Cases
 
+![CodeQL](https://github.com/intel-retail/automated-self-checkout/actions/workflows/codeql.yaml/badge.svg?branch=main)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/intel-retail/automated-self-checkout/badge)](https://api.securityscorecards.dev/projects/github.com/intel-retail/automated-self-checkout)
+
 There are various use cases available, click one each hyperlink to find out more details:
 - [dlstreamer gst](#dlstreamer-gst-use-case)
 - [grpc python](#grpc_python-use-case)
