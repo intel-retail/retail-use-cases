@@ -1,5 +1,7 @@
 .cl-cache
 **/__pycache__
+*.pyc
+output/
 .vscode
 docs/sitemap.xml.gz
 docs/*
