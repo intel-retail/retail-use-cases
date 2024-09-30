@@ -4,11 +4,10 @@
 # documentation.
 
 name: trivy_image_scan
-on:
-  push:
-    branches:
-    - master
-  pull_request:
+
+on: workflow_dispatch
+
+
 permissions:
   contents: read
 
