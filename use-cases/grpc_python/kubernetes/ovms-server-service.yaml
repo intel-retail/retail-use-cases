@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose -f docker-compose_grpc_python.yml convert -o kubernetes/
+    kompose.version: 1.26.0 (40646f47)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: ovms-server
+  name: ovms-server
+spec:
+  ports:
+    - name: "9001"
+      port: 9001
+      targetPort: 9001
+    - name: "9002"
+      port: 9002
+      targetPort: 9002
+  selector:
+    io.kompose.service: ovms-server
+status:
+  loadBalancer: {}

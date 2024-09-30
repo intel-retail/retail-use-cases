@@ -26,3 +26,25 @@ run:
 
 down:
 	PIPELINE_COUNT=$(PIPELINE_COUNT) MODEL_NAME=$(MODEL_NAME) RETAIL_USE_CASE_ROOT="$(RETAIL_USE_CASE_ROOT)" RESULTS_DIR="$(RESULTS_DIR)" docker compose -f $(DOCKER_COMPOSE) down
+
+build-minikube: build 
+	minikube start
+	minikube image build -t grpc_python:dev -f Dockerfile .
+	minikube image build -t ovms-server:dev -f Dockerfile ../ovms_server
+
+run-minikube-demo: build-minikube
+	kompose -f docker-compose_grpc_python.yml convert -o kubernetes/ && \
+	kubectl apply -f kubernetes
+	
+stop-minikube-demo:
+	kubectl delete -f kubernetes
+	minikube stop
+
+helm-convert:
+	kompose -f docker-compose.yml convert -o kubernetes -c
+
+install-helm:
+	helm install -f kubernetes/Chart.yaml dls kubernetes
+
+uninstall-helm:
+	helm uninstall dls

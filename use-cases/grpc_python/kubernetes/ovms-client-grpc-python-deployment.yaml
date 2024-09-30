@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose -f docker-compose_grpc_python.yml convert -o kubernetes/
+    kompose.version: 1.26.0 (40646f47)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: ovms-client-grpc-python
+  name: ovms-client-grpc-python
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: ovms-client-grpc-python
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose -f docker-compose_grpc_python.yml convert -o kubernetes/
+        kompose.version: 1.26.0 (40646f47)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: ovms-client-grpc-python
+    spec:
+      containers:
+        - command:
+            - /app/entrypoint.sh
+            - --model_name
+            - instance-segmentation-security-1040
+          env:
+            - name: CONTAINER_NAME
+              value: '"grpc_python0"'
+            - name: DETECTION_MODEL_NAME
+              value: instance-segmentation-security-1040
+            - name: DISPLAY
+              value: :1
+            - name: GRPC_PORT
+              value: "9001"
+            - name: INPUTSRC
+              value: rtsp://camera-simulator:8554/camera_0
+            - name: OVMS_INIT_TIME_IN_SECOND
+              value: "10"
+            - name: RENDER_MODE
+              value: "0"
+            - name: TARGET_DEVICE
+              value: CPU
+          image: grpc_python:dev
+          name: ovms-client-grpc-python
+          resources: {}
+          volumeMounts:
+            - mountPath: /tmp/results
+              name: ovms-client-grpc-python-claim0
+            - mountPath: /home/dlstreamer/.Xauthority
+              name: ovms-client-grpc-python-claim1
+            - mountPath: /tmp/.X11-unix
+              name: ovms-client-grpc-python-claim2
+      restartPolicy: Always
+      volumes:
+        - name: ovms-client-grpc-python-claim0
+          persistentVolumeClaim:
+            claimName: ovms-client-grpc-python-claim0
+        - name: ovms-client-grpc-python-claim1
+          persistentVolumeClaim:
+            claimName: ovms-client-grpc-python-claim1
+        - name: ovms-client-grpc-python-claim2
+          persistentVolumeClaim:
+            claimName: ovms-client-grpc-python-claim2
+status: {}

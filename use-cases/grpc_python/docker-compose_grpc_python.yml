@@ -12,63 +12,49 @@ services:
     container_name: camera-simulator
     image: aler9/rtsp-simple-server
     ports:
-      - "127.0.0.1:8554:8554"
+      - "8554:8554"
   camera-simulator0:
-    build:
-      context: .
-    image: openvino/ubuntu20_data_runtime:2021.4.2
+    image: jrottenberg/ffmpeg:4.1-alpine
     container_name: camera-simulator0
-    network_mode: "host"
-    entrypoint: ffmpeg
-    command: "
-        -nostdin
-        -re -stream_loop -1
-        -i /home/pipeline-server/sample-media/coca-cola-4465029-1920-15-bench.mp4
-        -c copy
-        -f rtsp
-        -rtsp_transport
-        tcp
-        rtsp://localhost:8554/camera_0
-        "
+    entrypoint: ["/bin/sh","-c"]
+    command: 
+    - | 
+       if [ ! -f /home/pipeline-server/sample-media/coca-cola-4465029-1920-15-bench.mp4 ]; then
+          mkdir -p /home/pipeline-server/sample-media
+          wget -O /home/pipeline-server/sample-media/coca-cola-4465029-1920-15-bench.mp4 https://www.pexels.com/download/video/4465029
+       fi
+       ffmpeg -nostdin -re -stream_loop -1 -i /home/pipeline-server/sample-media/coca-cola-4465029-1920-15-bench.mp4 -c copy -f rtsp -rtsp_transport tcp rtsp://camera-simulator:8554/camera_0
     depends_on:
       - camera-simulator
-    volumes:
-      - ${RETAIL_USE_CASE_ROOT}/performance-tools/sample-media:/home/pipeline-server/sample-media
 
-  OvmsServer:
+  ovms-server:
     image: ovms-server:dev
-    container_name: ovms-server0
     restart: always
     ports:
       - '9001:9001'
       - '9002:9002'
     volumes:
-      - ${RETAIL_USE_CASE_ROOT}/models:/models
+      -  ../../models:/models
     environment:
       - DEVICE=CPU
       - PLATFORM="core"
       - server_cl_cache_dir=/home/pipeline-server/.cl-cache
 
-  OvmsClientGrpcPython:
+  ovms-client-grpc-python:
     image: grpc_python:dev
-    deploy:
-      mode: replicated
-      replicas: ${PIPELINE_COUNT}
-    network_mode: "host"
-    entrypoint: /app/entrypoint.sh --model_name ${MODEL_NAME}
-    env_file:
-      - ./res/grpc_python.env
+    entrypoint: /app/entrypoint.sh --model_name instance-segmentation-security-1040
     environment:
       - CONTAINER_NAME="grpc_python0"
       - GRPC_PORT=9001
-      - INPUTSRC=rtsp://localhost:8554/camera_0
+      - INPUTSRC=rtsp://camera-simulator:8554/camera_0
       - TARGET_DEVICE=CPU
       - OVMS_INIT_TIME_IN_SECOND=10
       - RENDER_MODE=0 #RENDER_MODE=1 will work only after running xhost +local:docker
       - DISPLAY=$DISPLAY
+      - DETECTION_MODEL_NAME=instance-segmentation-security-1040
     depends_on:
       - OvmsServer
     volumes:
-      - ${RESULTS_DIR}:/tmp/results
+      - ../../results:/tmp/results
       - ~/.Xauthority:/home/dlstreamer/.Xauthority
       - /tmp/.X11-unix
