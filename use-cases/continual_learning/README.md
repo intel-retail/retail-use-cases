@@ -2,7 +2,7 @@
 
 ## Description
 
-This software package delivers the building blocks required to develop an AI-powered weighing scale use case that continuously learns and refines its image classification model with incoming new data. This reference implementation provides an intuitive application that facilitates an image classification model to learn incrementally with new image samples (sourced either from local images folder or live streaming feed). The continual learning algorithm is based on Streaming Linear Discriminant Analysis (SLDA) [[1]](#references) enabling the model to learn from individual images without forgetting previously acquired knowledge, resulting in faster training performance with comparable accuracy (Top1/Top5). This solution is optimally suited for CPU utilization, ensuring its adaptability across diverse hardware setups. This software has been tested to work with Python 3.8.10.
+This software package delivers the building blocks required to develop an AI-powered weighing scale use case that continuously learns and refines its image classification model with incoming new data. This reference implementation provides an intuitive application that facilitates an image classification model to learn incrementally with new image samples (sourced either from local images folder or live streaming feed). The continual learning algorithm is based on Streaming Linear Discriminant Analysis (SLDA) [[1]](#references) enabling the model to learn from individual images without forgetting previously acquired knowledge, resulting in faster training performance with comparable accuracy (Top1/Top5). This solution is optimally suited for CPU utilization, ensuring its adaptability across diverse hardware setups.
 
 ![Architecture](continual_learning_demo.png)
 

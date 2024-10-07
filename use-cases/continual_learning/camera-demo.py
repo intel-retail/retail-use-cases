@@ -1,3 +1,9 @@
+#
+# Copyright (C) 2024 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
 #!/usr/bin/env python
 import io
 import os
