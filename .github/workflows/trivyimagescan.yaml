@@ -25,10 +25,10 @@ jobs:
           with:
             ref: main
 
-        - name: Build an image from Dockerfile
+        - name: Build Continual Learning Image
           run: |
-            echo "running make build benchmark"
-            make build-dlstreamer
+            echo "running make build"
+            cd ./use-cases/continual_learning &&  make build
         - name: Run Trivy vulnerability scanner
           uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
           with:
