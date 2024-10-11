@@ -32,7 +32,7 @@ spec:
     spec:
       containers:
       - command:
-        - /app/gst-ovms/pipelines/yolov8_ensemble/yolo_efficientnet.sh
+        - /app/gst-ovms/pipelines/yolov8_ensemble/yolo_efficientnet_helm.sh
         env:
         - name: BARCODE
           value: "0"
@@ -80,7 +80,7 @@ spec:
               key: NO_BASH_C
               name: capi-yolov8-ensemble-env
         - name: OVMS_MODEL_CONFIG_JSON
-          value: /ovms_server/config-yolov8.json
+          value: /app/gst-ovms/pipelines/yolov8_ensemble/config-yolov8.json
         - name: PIPELINE_EXEC_PATH
           valueFrom:
             configMapKeyRef:
@@ -142,8 +142,6 @@ spec:
           name: capiyolov8ensemble-claim4
         - mountPath: /models
           name: capiyolov8ensemble-claim5
-        - mountPath: /ovms_server
-          name: capiyolov8ensemble-claim6
       restartPolicy: Always
       serviceAccountName: ""
       volumes:
@@ -165,7 +163,4 @@ spec:
       - name: capiyolov8ensemble-claim5
         persistentVolumeClaim:
           claimName: capiyolov8ensemble-claim5
-      - name: capiyolov8ensemble-claim6
-        persistentVolumeClaim:
-          claimName: capiyolov8ensemble-claim6
 status: {}

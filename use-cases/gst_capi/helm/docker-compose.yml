@@ -48,7 +48,7 @@ services:
       replicas: 1
     network_mode: "host"
     privileged: true
-    entrypoint: /app/gst-ovms/pipelines/yolov8_ensemble/yolo_efficientnet.sh
+    entrypoint: /app/gst-ovms/pipelines/yolov8_ensemble/yolo_efficientnet_helm.sh
     env_file:
       - capi-yolov8-ensemble-env
     environment:
@@ -58,7 +58,7 @@ services:
       - BARCODE=0
       - RENDER_MODE=${RENDER_MODE} #RENDER_MODE=1 will work only after running xhost +local:docker
       - DISPLAY=$DISPLAY
-      - OVMS_MODEL_CONFIG_JSON=/ovms_server/config-yolov8.json
+      - OVMS_MODEL_CONFIG_JSON=/app/gst-ovms/pipelines/yolov8_ensemble/config-yolov8.json
       - PIPELINE_PROFILE=capi_yolov8_ensemble
     depends_on:
       - camera-simulator1
@@ -72,4 +72,3 @@ services:
       - ~/.cl-cache:/home/pipeline-server/.cl-cache
       - ../res/:/home/pipeline-server/envs
       - $RETAIL_USE_CASE_ROOT/models:/models
-      - $RETAIL_USE_CASE_ROOT/use-cases/gst_capi/res/yolov8:/ovms_server

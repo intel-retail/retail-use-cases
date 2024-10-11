@@ -24,6 +24,7 @@ minikube_build_capi_yolov8_ensemble: build
 # clean up in case there is some left-over due to build error
 	rm -rf ./pipelines || true
 	cp -R ../pipelines .
+	cp ../res/yolov8/config-yolov8.json ./pipelines/capi_yolov8_ensemble/config-yolov8.json
 	minikube start
 	minikube image build -t yolov8capiensemble:dev -f Dockerfile_yolov8 .
 
