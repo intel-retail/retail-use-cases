@@ -7,6 +7,7 @@
 
 # https://github.com/openvinotoolkit/model_server/tree/main/client/python/kserve-api/samples
 GRPC_PORT="${GRPC_PORT:=9001}"
+GRPC_ADDRESS="${GRPC_ADDRESS:=localhost}"
 OVMS_INIT_TIME_IN_SECOND="${OVMS_INIT_TIME_IN_SECOND:=10}"
 
 # generate unique container id based on the date with the precision upto nano-seconds
@@ -46,5 +47,5 @@ sleep $OVMS_INIT_TIME_IN_SECOND
 PROFILE_NAME="grpc_python"
 
 # Run the grpc python client
-python3 ./grpc_python.py --input_src "$INPUTSRC" --grpc_address 127.0.0.1 --grpc_port "$GRPC_PORT" --model_name "$DETECTION_MODEL_NAME" \
+python3 ./grpc_python.py --input_src "$INPUTSRC" --grpc_address "$GRPC_ADDRESS" --grpc_port "$GRPC_PORT" --model_name "$DETECTION_MODEL_NAME" \
 2>&1  | tee >/tmp/results/r$cid"_$PROFILE_NAME".jsonl >(stdbuf -oL sed -n -e 's/^.*fps: //p' | stdbuf -oL cut -d , -f 1 > /tmp/results/pipeline$cid"_$PROFILE_NAME".log)

@@ -33,8 +33,6 @@ services:
     ports:
       - '9001:9001'
       - '9002:9002'
-    volumes:
-      -  ../../models:/models
     environment:
       - DEVICE=CPU
       - PLATFORM="core"
@@ -42,16 +40,17 @@ services:
 
   ovms-client-grpc-python:
     image: grpc_python:dev
-    entrypoint: /app/entrypoint.sh --model_name instance-segmentation-security-1040
+    entrypoint: /app/entrypoint.sh --model_name yolov5s
     environment:
       - CONTAINER_NAME="grpc_python0"
+      - GRPC_ADDRESS=ovms-server
       - GRPC_PORT=9001
       - INPUTSRC=rtsp://camera-simulator:8554/camera_0
       - TARGET_DEVICE=CPU
       - OVMS_INIT_TIME_IN_SECOND=10
       - RENDER_MODE=0 #RENDER_MODE=1 will work only after running xhost +local:docker
       - DISPLAY=$DISPLAY
-      - DETECTION_MODEL_NAME=instance-segmentation-security-1040
+      - DETECTION_MODEL_NAME=yolov5s
     depends_on:
       - OvmsServer
     volumes:

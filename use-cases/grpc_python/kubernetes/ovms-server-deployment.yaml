@@ -13,8 +13,7 @@ spec:
   selector:
     matchLabels:
       io.kompose.service: ovms-server
-  strategy:
-    type: Recreate
+  strategy: {}
   template:
     metadata:
       annotations:
@@ -38,12 +37,5 @@ spec:
             - containerPort: 9001
             - containerPort: 9002
           resources: {}
-          volumeMounts:
-            - mountPath: /models
-              name: ovms-server-claim0
       restartPolicy: Always
-      volumes:
-        - name: ovms-server-claim0
-          persistentVolumeClaim:
-            claimName: ovms-server-claim0
 status: {}

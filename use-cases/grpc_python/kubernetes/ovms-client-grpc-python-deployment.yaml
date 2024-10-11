@@ -28,14 +28,16 @@ spec:
         - command:
             - /app/entrypoint.sh
             - --model_name
-            - instance-segmentation-security-1040
+            - yolov5s
           env:
             - name: CONTAINER_NAME
               value: '"grpc_python0"'
             - name: DETECTION_MODEL_NAME
-              value: instance-segmentation-security-1040
+              value: yolov5s
             - name: DISPLAY
               value: :1
+            - name: GRPC_ADDRESS
+              value: ovms-server
             - name: GRPC_PORT
               value: "9001"
             - name: INPUTSRC
