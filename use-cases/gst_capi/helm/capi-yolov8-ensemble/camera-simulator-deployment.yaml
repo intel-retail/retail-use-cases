@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: /snap/kompose/19/kompose-linux-amd64 -f docker-compose.yml convert
+      -o capi-yolov8-ensemble/
+    kompose.version: 1.21.0 (992df58d8)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: camera-simulator
+  name: camera-simulator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: camera-simulator
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: /snap/kompose/19/kompose-linux-amd64 -f docker-compose.yml convert
+          -o capi-yolov8-ensemble/
+        kompose.version: 1.21.0 (992df58d8)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: camera-simulator
+    spec:
+      containers:
+      - image: aler9/rtsp-simple-server
+        imagePullPolicy: ""
+        name: camera-simulator
+        ports:
+        - containerPort: 8554
+        resources: {}
+      restartPolicy: Always
+      serviceAccountName: ""
+      volumes: null
+status: {}

@@ -9,7 +9,7 @@ ARG BASE_IMAGE=openvino/model_server:2024.3-gpu
 FROM $BASE_IMAGE AS release
 
 USER root
-WORKDIR /
+WORKDIR /pipelines
 ENV DEBIAN_FRONTEND=noninteractive
 SHELL ["/bin/bash", "-c"]
 
@@ -37,13 +37,13 @@ RUN wget -O ovms.tar.gz https://github.com/openvinotoolkit/model_server/releases
 RUN tar -xf ovms.tar.gz
 
 # Copy C-API sources
-ENV LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/:/usr/local/lib/x86_64-linux-gnu/:/usr/local/lib:/ovms/lib
+ENV LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/:/usr/local/lib/x86_64-linux-gnu/:/usr/local/lib:/pipelines/ovms/lib/:/ovms/lib
 WORKDIR /tmp
 RUN mkdir -p /app/gst-ovms/pipelines/
 
-COPY capi_yolov8_ensemble /app/gst-ovms/pipelines/yolov8_ensemble
+COPY pipelines/capi_yolov8_ensemble /app/gst-ovms/pipelines/yolov8_ensemble
 
-RUN cd /app/gst-ovms/pipelines/yolov8_ensemble; make build
+RUN cd /app/gst-ovms/pipelines/yolov8_ensemble; ls -al ; ls -al /ovms/lib; ls -al /pipelines/ovms/lib; make build
 
 USER ovms
 WORKDIR /app/gst-ovms/pipelines
