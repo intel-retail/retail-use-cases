@@ -123,7 +123,7 @@ spec:
             configMapKeyRef:
               key: cl_cache_dir
               name: capi-yolov8-ensemble-env
-        image: openvino/model_server-capi-gst-ovms-capi_yolov8_ensemble:latest
+        image: yolov8capiensemble:dev
         imagePullPolicy: ""
         name: capiyolov8ensemble
         resources: {}

@@ -26,8 +26,6 @@ minikube_build_capi_yolov8_ensemble: build
 	cp -R ../pipelines .
 	minikube start
 	minikube image build -t yolov8capiensemble:dev -f Dockerfile_yolov8 .
-# clean-up
-	rm -rf ./pipelines
 
 helm_convert_capi_yolov8:
 	RESULTS_DIR=$(RESULTS_DIR) RETAIL_USE_CASE_ROOT=$(RETAIL_USE_CASE_ROOT) kompose -f $(DOCKER_COMPOSE) convert -o $(YOLOV8_PACKAGE_NAME) -c

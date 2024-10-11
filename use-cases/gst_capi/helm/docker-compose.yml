@@ -42,7 +42,7 @@ services:
       - camera-simulator
 
   capiyolov8ensemble:
-    image: openvino/model_server-capi-gst-ovms-capi_yolov8_ensemble:latest
+    image: yolov8capiensemble:dev
     deploy:
       mode: replicated
       replicas: 1
