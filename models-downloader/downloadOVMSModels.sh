@@ -323,3 +323,4 @@ downloadYolov5sFP16INT8
 downloadEfficientnetb0
 downloadHorizontalText
 downloadTextRecognition
+downloadYolov8FP32INT8

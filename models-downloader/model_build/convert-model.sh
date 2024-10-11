@@ -20,12 +20,6 @@ fi
 
 python3 convert-model.py
 
-if [ ! -f models/yolov8n.onnx ]
-then
-	echo "Model conversion failed  for onnx!"
-	exit 1
-fi
-
 if [ ! -f models/yolov8n_openvino_model/yolov8n.bin ]
 then
 	echo "Model conversion failed for IR!"

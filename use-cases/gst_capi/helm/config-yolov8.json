@@ -25,9 +25,6 @@
           "PERFORMANCE_HINT": "LATENCY"
         },
         "target_device": "CPU"
-      },
-      "latest": {
-        "num_versions": 2
       }
     },
     {
@@ -42,9 +39,6 @@
           "PERFORMANCE_HINT": "LATENCY"
         },
         "target_device": "CPU"
-      },
-      "latest": {
-        "num_versions": 2
       }
     },
     {
@@ -58,9 +52,6 @@
           "PERFORMANCE_HINT": "LATENCY"
         },
         "target_device": "CPU"
-      },
-      "latest": {
-        "num_versions": 2
       }
     }
   ],

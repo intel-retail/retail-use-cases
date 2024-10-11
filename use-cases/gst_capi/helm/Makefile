@@ -32,7 +32,7 @@ minikube_build_capi_yolov8_ensemble:
 	cp config-yolov8.json ./pipelines/capi_yolov8_ensemble/config-yolov8.json
 	cp -R $(RETAIL_USE_CASE_ROOT)models-downloader .
 	OVMSConfigFileEnv="../config-yolov8.json" ./models-downloader/downloadOVMSModels.sh
-	mkdir -p ./models/yolov8/FP32-INT8/1/ && cp ./yolov8n-int8-416.* ./models/yolov8/FP32-INT8/1/
+# mkdir -p ./models/yolov8/FP32-INT8/1/ && cp ./yolov8n-int8-416.* ./models/yolov8/FP32-INT8/1/
 	minikube start --mount-string="/tmp/results:/tmp/hostpath-provisioner/default/capiyolov8ensemble-claim0" --mount
 	minikube image build -t yolov8capiensemble:dev -f Dockerfile_yolov8 .
 
