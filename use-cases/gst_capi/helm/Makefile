@@ -23,8 +23,11 @@ build_capi_yolov8_ensemble:
 minikube_build_capi_yolov8_ensemble: build
 # clean up in case there is some left-over due to build error
 	rm -rf ./pipelines || true
+	rm -rf ./models-downloader || true
 	cp -R ../pipelines .
-	cp ../res/yolov8/config-yolov8.json ./pipelines/capi_yolov8_ensemble/config-yolov8.json
+	cp config-yolov8.json ./pipelines/capi_yolov8_ensemble/config-yolov8.json
+	cp -R $(RETAIL_USE_CASE_ROOT)models-downloader .
+	OVMSConfigFileEnv="../../ovms_server/config.json" ./models-downloader/downloadOVMSModels.sh
 	minikube start
 	minikube image build -t yolov8capiensemble:dev -f Dockerfile_yolov8 .
 
@@ -33,8 +36,13 @@ helm_convert_capi_yolov8:
 	@sed -i 's/version: [0-9].[0-9].[0-9]/version: '$(RELEASE_VERSION)'/' ./$(YOLOV8_PACKAGE_NAME)/Chart.yaml
 	helm package $(YOLOV8_PACKAGE_NAME)
 
-run_capi_yolov8_ensemble: minikube_build_capi_yolov8_ensemble
-	RESULTS_DIR=$(RESULTS_DIR) RETAIL_USE_CASE_ROOT=$(RETAIL_USE_CASE_ROOT) kompose -f $(DOCKER_COMPOSE) convert -o $(YOLOV8_PACKAGE_NAME)/ && \
+kube_apply_nfd:
+	kubectl apply -k 'https://github.com/intel/intel-device-plugins-for-kubernetes/deployments/nfd?ref=v0.30.0'
+	kubectl apply -k 'https://github.com/intel/intel-device-plugins-for-kubernetes/deployments/nfd/overlays/node-feature-rules?ref=v0.30.0'
+	kubectl apply -k 'https://github.com/intel/intel-device-plugins-for-kubernetes/deployments/gpu_plugin/overlays/nfd_labeled_nodes?ref=v0.30.0'
+
+run_capi_yolov8_ensemble: | minikube_build_capi_yolov8_ensemble kube_apply_nfd
+	RESULTS_DIR=$(RESULTS_DIR) RETAIL_USE_CASE_ROOT=$(RETAIL_USE_CASE_ROOT) RENDER_MODE=$(RENDER_MODE) kompose -f $(DOCKER_COMPOSE) convert -o $(YOLOV8_PACKAGE_NAME)/ && \
 	kubectl apply -f $(YOLOV8_PACKAGE_NAME)
 
 down_capi_yolov8_ensemble:

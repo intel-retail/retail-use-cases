@@ -5,7 +5,7 @@
 # -----------------------------------------------------------
 
 # https://hub.docker.com/r/openvino/model_server
-ARG BASE_IMAGE=openvino/model_server:2024.3-gpu
+ARG BASE_IMAGE=openvino/model_server:2023.1-gpu
 FROM $BASE_IMAGE AS release
 
 USER root
@@ -45,10 +45,11 @@ COPY pipelines/capi_yolov8_ensemble /app/gst-ovms/pipelines/yolov8_ensemble
 
 RUN cd /app/gst-ovms/pipelines/yolov8_ensemble; ls -al ; ls -al /ovms/lib; ls -al /pipelines/ovms/lib; make build
 
+RUN mkdir /tmp/results && mkdir -p /models
+COPY models/ /models
+
 USER ovms
 WORKDIR /app/gst-ovms/pipelines
-
-RUN mkdir /tmp/results
 
 # Enable HWA decoder for OpenCV using GST use cases
 ENV OPENCV_FFMPEG_CAPTURE_OPTIONS="hw_decoders_any;vaapi"

@@ -63,15 +63,25 @@ echo "PIPELINE_PROFILE: $PIPELINE_PROFILE  DEVICE: $DEVICE"
 echo "DC: $DC INPUTSRC: $INPUTSRC USE_VPL: $USE_VPL RENDER_MODE: $RENDER_MODE RENDER_PORTRAIT_MODE: $RENDER_PORTRAIT_MODE"
 echo "CODEC_TYPE: $CODEC_TYPE WINDOW_WIDTH: $WINDOW_WIDTH WINDOW_HEIGHT: $WINDOW_HEIGHT DETECTION_THRESHOLD: $DETECTION_THRESHOLD"
 
+appExitCode=0
 # Direct console output
 if [ "$DC" != 1 ]
 then
 	/app/gst-ovms/pipelines/yolov8_ensemble/capi_yolov8_ensemble $INPUTSRC $USE_VPL $RENDER_MODE $RENDER_PORTRAIT_MODE $CODEC_TYPE $WINDOW_WIDTH $WINDOW_HEIGHT $DETECTION_THRESHOLD 2>&1 | tee >/tmp/results/r"$cid"_"$PIPELINE_PROFILE".jsonl >(stdbuf -oL sed -n -e 's/^.*FPS: //p' | stdbuf -oL cut -d , -f 1 > /tmp/results/pipeline"$cid"_"$PIPELINE_PROFILE".log)
+	appExitCode=$?
 	sleep 10
 	ls -al /app/gst-ovms/pipelines/yolov8_ensemble/config-yolov8.json
+	ls -al /models
+	ls -al /dev/dri
 	cat /tmp/results/r"$cid"_"$PIPELINE_PROFILE".jsonl
 else
 	/app/gst-ovms/pipelines/yolov8_ensemble/capi_yolov8_ensemble $INPUTSRC $USE_VPL $RENDER_MODE $RENDER_PORTRAIT_MODE $CODEC_TYPE $WINDOW_WIDTH $WINDOW_HEIGHT $DETECTION_THRESHOLD
+	appExitCode=$?
+fi
+
+if [ $appExitCode != 0 ]; then
+	echo "capi yolov8 ensemble failed with exit code=$appExitCode"
+	exit 1
 fi
 
 echo "end of script..."

@@ -53,7 +53,8 @@ services:
       - capi-yolov8-ensemble-env
     environment:
       - CONTAINER_NAME="capi_yolov8_ensemble"
-      - INPUTSRC=rtsp://localhost:8554/camera_1
+      - INPUTSRC=rtsp://camera-simulator:8554/camera_1
+      - USE_ONEVPL=0
       - DEVICE=CPU
       - BARCODE=0
       - RENDER_MODE=${RENDER_MODE} #RENDER_MODE=1 will work only after running xhost +local:docker
@@ -62,13 +63,8 @@ services:
       - PIPELINE_PROFILE=capi_yolov8_ensemble
     depends_on:
       - camera-simulator1
-    labels:
-      kompose.volume.storage-class-name: yolov8-ensemble-storage
-      kompose.volume.type: hostPath
     volumes:
       - $RESULTS_DIR:/tmp/results
       - ~/.Xauthority:/home/dlstreamer/.Xauthority
       - /tmp/.X11-unix
       - ~/.cl-cache:/home/pipeline-server/.cl-cache
-      - ../res/:/home/pipeline-server/envs
-      - $RETAIL_USE_CASE_ROOT/models:/models

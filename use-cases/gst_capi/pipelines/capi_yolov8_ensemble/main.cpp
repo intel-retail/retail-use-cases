@@ -139,8 +139,13 @@ public:
                     "video/x-raw, width=" + std::to_string(video_width) +
                     ", height=" + std::to_string(video_height) + " ! videoconvert ! video/x-raw,format=RGB ! queue ! appsink drop=1 sync=0";
                 else
-                    return "rtspsrc location=" + mediaLocation + " ! rtph264depay ! h264parse ! vah264dec ! video/x-raw(memory:VAMemory),format=NV12 " +
-                    " ! vapostproc ! " +
+                    // return "rtspsrc location=" + mediaLocation + " ! rtph264depay ! h264parse ! vah264dec ! video/x-raw(memory:VAMemory),format=NV12 " +
+                    // " ! vapostproc ! " +
+                    // " video/x-raw, width=" + std::to_string(video_width) +
+                    // ", height=" + std::to_string(video_height) +
+                    // "  ! videoconvert ! video/x-raw,format=RGB ! queue ! appsink drop=1 sync=0";
+                    return "rtspsrc location=" + mediaLocation + " ! rtph264depay ! decodebin force-sw-decoders=1 ! " +
+                    //" ! vapostproc ! " +
                     " video/x-raw, width=" + std::to_string(video_width) +
                     ", height=" + std::to_string(video_height) +
                     "  ! videoconvert ! video/x-raw,format=RGB ! queue ! appsink drop=1 sync=0";

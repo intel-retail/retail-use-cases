@@ -5,8 +5,6 @@ metadata:
     kompose.cmd: /snap/kompose/19/kompose-linux-amd64 -f docker-compose.yml convert
       -o capi-yolov8-ensemble/
     kompose.version: 1.21.0 (992df58d8)
-    kompose.volume.storage-class-name: yolov8-ensemble-storage
-    kompose.volume.type: hostPath
   creationTimestamp: null
   labels:
     io.kompose.service: capiyolov8ensemble
@@ -24,8 +22,6 @@ spec:
         kompose.cmd: /snap/kompose/19/kompose-linux-amd64 -f docker-compose.yml convert
           -o capi-yolov8-ensemble/
         kompose.version: 1.21.0 (992df58d8)
-        kompose.volume.storage-class-name: yolov8-ensemble-storage
-        kompose.volume.type: hostPath
       creationTimestamp: null
       labels:
         io.kompose.service: capiyolov8ensemble
@@ -63,7 +59,7 @@ spec:
               key: GST_VAAPI_DRM_DEVICE
               name: capi-yolov8-ensemble-env
         - name: INPUTSRC
-          value: rtsp://localhost:8554/camera_1
+          value: rtsp://camera-simulator:8554/camera_1
         - name: INPUT_TYPE
           valueFrom:
             configMapKeyRef:
@@ -138,10 +134,6 @@ spec:
           name: capiyolov8ensemble-claim2
         - mountPath: /home/pipeline-server/.cl-cache
           name: capiyolov8ensemble-claim3
-        - mountPath: /home/pipeline-server/envs
-          name: capiyolov8ensemble-claim4
-        - mountPath: /models
-          name: capiyolov8ensemble-claim5
       restartPolicy: Always
       serviceAccountName: ""
       volumes:
@@ -157,10 +149,4 @@ spec:
       - name: capiyolov8ensemble-claim3
         persistentVolumeClaim:
           claimName: capiyolov8ensemble-claim3
-      - name: capiyolov8ensemble-claim4
-        persistentVolumeClaim:
-          claimName: capiyolov8ensemble-claim4
-      - name: capiyolov8ensemble-claim5
-        persistentVolumeClaim:
-          claimName: capiyolov8ensemble-claim5
 status: {}

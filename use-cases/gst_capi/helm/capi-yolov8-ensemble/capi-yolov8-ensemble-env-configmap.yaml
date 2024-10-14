@@ -8,10 +8,10 @@ data:
   LOG_LEVEL: "0"
   NO_BASH_C: "1"
   PIPELINE_EXEC_PATH: pipelines/capi_yolov8_ensemble/capi_yolov8_ensemble
-  RENDER_MODE: "1"
+  RENDER_MODE: "0"
   RENDER_PORTRAIT_MODE: "0"
   TARGET_GPU_DEVICE: --privileged
-  USE_ONEVPL: "1"
+  USE_ONEVPL: "0"
   WINDOW_HEIGHT: "720"
   WINDOW_WIDTH: "1280"
   cl_cache_dir: /home/intel/gst-ovms/.cl-cache
