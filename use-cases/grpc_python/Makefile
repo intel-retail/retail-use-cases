@@ -44,7 +44,7 @@ stop-minikube-demo:
 	minikube stop
 
 helm-convert:
-	kompose -f docker-compose_grpc_python.yml convert -o kubernetes -c
+	kompose -f docker-compose_grpc_python.yml convert -o object-detection-service-distributed-grpc -c
 
 install-helm:
 	helm install -f kubernetes/Chart.yaml dls kubernetes
