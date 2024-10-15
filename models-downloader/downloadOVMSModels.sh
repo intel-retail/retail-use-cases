@@ -278,6 +278,7 @@ downloadYolov8FP32INT8() {
 
 ### Run normal downloader via omz model downloader:
 configFile="$modelDir"/../use-cases/ovms_server/config.json
+OVMSConfigFileEnv="${OVMSConfigFileEnv:=}"
 if [ ! -f "$configFile" ]; then
     echo "cannot find ovms server configFile: $configFile , will use environemnt variable value OVMSConfigFileEnv: $OVMSConfigFileEnv"
     configFile=$OVMSConfigFileEnv

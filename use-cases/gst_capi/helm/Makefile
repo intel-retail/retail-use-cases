@@ -2,7 +2,10 @@
 # SPDX-License-Identifier: Apache-2.0
 
 .PHONY: build build_capi_yolov8_ensemble
-.PHONY: minikube_build_capi_yolov8 helm_convert_capi_yolov8
+.PHONY: minikube_build_capi_yolov8_ensemble run_capi_yolov8_ensemble minikube_show_capi_yolov8_log
+.PHONY: kube_apply_nfd
+.PHONY: down_capi_yolov8_ensemble
+.PHONY: helm_convert_capi_yolov8_ensemble helm_install_capi_yolov8_ensemble helm_uninstall_capi_yolov8_ensemble
 
 # initial default values
 DOCKER_COMPOSE ?= docker-compose.yml
@@ -45,8 +48,8 @@ run_capi_yolov8_ensemble: | minikube_build_capi_yolov8_ensemble kube_apply_nfd
 	RESULTS_DIR=$(RESULTS_DIR) RETAIL_USE_CASE_ROOT=$(RETAIL_USE_CASE_ROOT) RENDER_MODE=$(RENDER_MODE) kompose -f $(DOCKER_COMPOSE) convert -o kubernetes/ && \
 	kubectl apply -f kubernetes
 
-minikube_show_results_log:
-	./minikube_check_result_log.sh
+minikube_show_capi_yolov8_log:
+	@./minikube_check_result_log.sh
 
 down_capi_yolov8_ensemble:
 	kubectl delete -f kubernetes

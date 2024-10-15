@@ -144,10 +144,6 @@ public:
                     " video/x-raw, width=" + std::to_string(video_width) +
                     ", height=" + std::to_string(video_height) +
                     "  ! videoconvert ! video/x-raw,format=RGB ! queue ! appsink drop=1 sync=0";
-                    // return "rtspsrc location=" + mediaLocation + " ! rtph264depay ! decodebin force-sw-decoders=1 ! " +
-                    // " video/x-raw, width=" + std::to_string(video_width) +
-                    // ", height=" + std::to_string(video_height) +
-                    // "  ! videoconvert ! video/x-raw,format=RGB ! queue ! appsink drop=1 sync=0";
                 case H265:
                 if (use_onevpl)
                     return "rtspsrc location=" + mediaLocation + " ! rtph265depay ! h265parse ! " +
