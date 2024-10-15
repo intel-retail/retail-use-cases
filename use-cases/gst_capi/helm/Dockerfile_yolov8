@@ -25,6 +25,10 @@ RUN apt -y update && \
 RUN apt update -y; apt install -y libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libgstreamer-plugins-bad1.0-dev gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3 gstreamer1.0-qt5 gstreamer1.0-pulseaudio && \
     rm -rf /var/lib/apt/lists/* && rm -rf /tmp/*
 
+# vainfo is useful tool to list some information of GRU drivers for VA-APIs
+RUN apt update -y; apt install -y vainfo && \
+    rm -rf /var/lib/apt/lists/* && rm -rf /tmp/*
+
 # Install MSDK/oneAPI oneVPL libs
 ARG GPU_TYPE="client"
 RUN apt update -y; apt install -y wget curl vim gpg-agent; wget -qO - https://repositories.intel.com/gpu/intel-graphics.key | gpg --dearmor --output /usr/share/keyrings/intel-graphics.gpg; echo "deb [arch=amd64,i386 signed-by=/usr/share/keyrings/intel-graphics.gpg] https://repositories.intel.com/gpu/ubuntu jammy $GPU_TYPE" | tee /etc/apt/sources.list.d/intel-gpu-jammy.list; apt update -y; DEBIAN_FRONTEND=noninteractive apt-get install -y libegl-mesa0 libegl1-mesa libegl1-mesa-dev libgbm1 libgl1-mesa-dev libgl1-mesa-dri libglapi-mesa libgles2-mesa-dev libglx-mesa0 libigdgmm12 libxatracker2 mesa-va-drivers mesa-vulkan-drivers libcanberra-gtk-module libmfx1 libmfxgen1 libvpl2  && \
@@ -37,18 +41,18 @@ RUN wget -O ovms.tar.gz https://github.com/openvinotoolkit/model_server/releases
 RUN tar -xf ovms.tar.gz
 
 # Copy C-API sources
-ENV LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/:/usr/local/lib/x86_64-linux-gnu/:/usr/local/lib:/pipelines/ovms/lib/:/ovms/lib
+ENV LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/:/usr/local/lib/x86_64-linux-gnu/:/usr/local/lib:/pipelines/ovms/lib/
 WORKDIR /tmp
 RUN mkdir -p /app/gst-ovms/pipelines/
 
 COPY pipelines/capi_yolov8_ensemble /app/gst-ovms/pipelines/yolov8_ensemble
 
-RUN cd /app/gst-ovms/pipelines/yolov8_ensemble; ls -al ; ls -al /ovms/lib; ls -al /pipelines/ovms/lib; make build
+RUN cd /app/gst-ovms/pipelines/yolov8_ensemble; ls -al ; ls -al /ovms/lib; ls -al /pipelines/ovms/lib; make -f Makefile_helm build
 
 RUN mkdir /tmp/results && mkdir -p /models
 COPY models/ /models
 
-USER ovms
+#USER ovms
 WORKDIR /app/gst-ovms/pipelines
 
 # Enable HWA decoder for OpenCV using GST use cases

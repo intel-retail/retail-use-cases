@@ -54,6 +54,12 @@ env
 ls -al /tmp/
 ls -al /tmp/results/
 ls -al /app/gst-ovms/pipelines/yolov8_ensemble/
+echo "libva: /usr/lib/x86_64-linux-gnu/dri/ "
+ls -al /usr/lib/x86_64-linux-gnu/dri/
+ls -al /usr/lib/
+ls -al /usr/lib/x86_64-linux-gnu/
+ls -al /usr/lib/x86_64-linux-gnu/libva*.so*
+ls -al /usr/lib/x86_64-linux-gnu/libva-drm*.so*
 
 # generate unique container id based on the date with the precision upto nano-seconds
 cid=$(date +%Y%m%d%H%M%S%N)
@@ -85,3 +91,9 @@ if [ $appExitCode != 0 ]; then
 fi
 
 echo "end of script..."
+# make forever-loop so it is easy to debug into docker exec -it in case there is error
+# you can always use "kubectl delete -f kubernetes" to terminate this container
+while true
+do
+	sleep 1
+done

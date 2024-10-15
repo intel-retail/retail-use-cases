@@ -18,3 +18,6 @@ use-cases/demos/docker-compose_demo_instance_segmentation.yml
 use-cases/demos/docker-compose_demo_object_detection.yml
 use-cases/gst_capi/docker-compose_capi_yolov8_ensemble.yml
 smoke-tests/smoke_tests_output.log
+use-cases/gst_capi/helm/kubernetes/
+use-cases/gst_capi/helm/models-downloader/
+use-cases/gst_capi/helm/pipelines/

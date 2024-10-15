@@ -67,7 +67,7 @@
   "custom_node_library_config_list": [
     {
         "name": "efficientnetb0_extractor",
-        "base_path": "/ovms/lib/libcustom_node_efficientnetb0-yolov8.so"
+        "base_path": "/pipelines/ovms/lib/libcustom_node_efficientnetb0-yolov8.so"
     }
   ],
   "pipeline_config_list": [

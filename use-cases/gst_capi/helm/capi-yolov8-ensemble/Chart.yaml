@@ -1,0 +1,8 @@
+name: capi-yolov8-ensemble
+description: A generated Helm Chart for capi-yolov8-ensemble from Skippbox Kompose
+version: 3.2.0
+apiVersion: v1
+keywords:
+  - capi-yolov8-ensemble
+sources:
+home:

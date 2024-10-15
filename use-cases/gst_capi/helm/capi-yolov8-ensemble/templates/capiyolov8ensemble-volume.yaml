@@ -1,13 +1,43 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: capiyolov8ensemble-volume
+  name: capiyolov8ensemble-pvc0
   labels:
     type: local
 spec:
   capacity:
-    storage: 500Mi
+    storage: 100Mi
   accessModes:
     - ReadWriteOnce
   hostPath:
     path: "/tmp/results"
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: capiyolov8ensemble-pvc1
+  labels:
+    type: local
+spec:
+  capacity:
+    storage: 100Mi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "~/.Xauthority"
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: capiyolov8ensemble-pvc3
+  labels:
+    type: local
+spec:
+  capacity:
+    storage: 100Mi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "~/.cl-cache"
