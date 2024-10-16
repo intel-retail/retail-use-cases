@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 .PHONY: build build_capi_yolov8_ensemble
-.PHONY: minikube_build_capi_yolov8_ensemble run_capi_yolov8_ensemble minikube_show_capi_yolov8_log
+.PHONY: minikube_build_capi_yolov8_ensemble run_capi_yolov8_ensemble minikube_show_capi_yolov8_log minikube_pod_log
 .PHONY: kube_apply_nfd
 .PHONY: down_capi_yolov8_ensemble
 .PHONY: helm_convert_capi_yolov8_ensemble helm_install_capi_yolov8_ensemble helm_uninstall_capi_yolov8_ensemble
@@ -16,6 +16,7 @@ RESULTS_DIR ?= /tmp/results
 
 RELEASE_VERSION=3.2.0
 YOLOV8_PACKAGE_NAME=capi-yolov8-ensemble
+YOLOV8_POD_NAME=$(shell kubectl get pod | grep "capiyolov8ensemble" | awk '{print $$1}')
 
 build: build_capi_yolov8_ensemble
 
@@ -45,11 +46,16 @@ kube_apply_nfd:
 	kubectl apply -k 'https://github.com/intel/intel-device-plugins-for-kubernetes/deployments/gpu_plugin/overlays/nfd_labeled_nodes?ref=v0.30.0'
 
 run_capi_yolov8_ensemble: | minikube_build_capi_yolov8_ensemble kube_apply_nfd
+	mkdir -p kubernetes && cp ./$(YOLOV8_PACKAGE_NAME)/templates/capiyolov8ensemble-volumes.yaml ./kubernetes/
 	RESULTS_DIR=$(RESULTS_DIR) RETAIL_USE_CASE_ROOT=$(RETAIL_USE_CASE_ROOT) RENDER_MODE=$(RENDER_MODE) kompose -f $(DOCKER_COMPOSE) convert -o kubernetes/ && \
 	kubectl apply -f kubernetes
 
 minikube_show_capi_yolov8_log:
 	@./minikube_check_result_log.sh
+
+minikube_pod_log:
+	@echo "pod name is: $(YOLOV8_POD_NAME)"
+	@kubectl logs $(YOLOV8_POD_NAME)
 
 down_capi_yolov8_ensemble:
 	kubectl delete -f kubernetes

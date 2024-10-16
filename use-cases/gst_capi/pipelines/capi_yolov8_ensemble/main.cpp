@@ -57,6 +57,8 @@
 
 #include "ovms.h"  // NOLINT
 
+#include "mqtt_messages.cpp"
+
 using namespace std;
 using namespace cv;
 
@@ -120,6 +122,12 @@ std::vector<cv::VideoCapture> _vidcaps;
 int _window_width = 1280;
 int _window_height = 720;
 float _detection_threshold = 0.5;
+int exitCode = 0;
+bool _useMqtt = 0;
+std::string _mqttBroker;
+int _mqttPortNum = 0;
+string mqttClientID = "capiyolov8ensemble_MQTT_Client";
+string mqttTopic = "capiyolov8ensemble/FPS";
 
 class GStreamerMediaPipelineService : public MediaPipelineServiceInterface {
 public:
@@ -1661,7 +1669,7 @@ void hwc_to_chw(cv::InputArray src, cv::OutputArray dst) {
 
 }
 
-void run_stream(std::string mediaPath, GstElement* pipeline, GstElement* appsink, ObjectDetectionInterface* objDet)
+int run_stream(std::string mediaPath, GstElement* pipeline, GstElement* appsink, ObjectDetectionInterface* objDet)
 {
     auto ttid = std::this_thread::get_id();
     std::stringstream ss;
@@ -1684,6 +1692,8 @@ void run_stream(std::string mediaPath, GstElement* pipeline, GstElement* appsink
     int avg_latency_frame = 0;
     int total_latency_frames = 0;
     OVMS_Status* res = NULL;
+
+    MQTTPublisher* mqttPublisher = nullptr;
 
     while (!shutdown_request) {
         auto startTime = std::chrono::high_resolution_clock::now();
@@ -1732,7 +1742,7 @@ void run_stream(std::string mediaPath, GstElement* pipeline, GstElement* appsink
         auto metricStartTime = std::chrono::high_resolution_clock::now();
         if (gst_app_sink_is_eos(GST_APP_SINK(appsink))) {
             std::cout << "INFO: EOS " << std::endl;
-            return;
+            return 1;
         }
         auto metricEndTime = std::chrono::high_resolution_clock::now();
         auto metricLatencyTime = ((std::chrono::duration_cast<std::chrono::milliseconds>(metricEndTime-metricStartTime)).count());
@@ -1743,7 +1753,7 @@ void run_stream(std::string mediaPath, GstElement* pipeline, GstElement* appsink
 
         if (sample == nullptr) {
             std::cout << "ERROR: No sample found" << std::endl;
-            return;
+            return 1;
         }
         metricEndTime = std::chrono::high_resolution_clock::now();
         metricLatencyTime = ((std::chrono::duration_cast<std::chrono::milliseconds>(metricEndTime-metricStartTime)).count());
@@ -1754,7 +1764,7 @@ void run_stream(std::string mediaPath, GstElement* pipeline, GstElement* appsink
 
         if (caps == nullptr) {
             std::cout << "ERROR: No caps found for sample" << std::endl;
-            return;
+            return 1;
         }
 
         s = gst_caps_get_structure(caps, 0);
@@ -1775,7 +1785,7 @@ void run_stream(std::string mediaPath, GstElement* pipeline, GstElement* appsink
 
         if (m.size <= 0) {
             std::cout << "ERROR: Invalid buffer size" << std::endl;
-            return;
+            return 1;
         }
 
         cv::Mat analytics_frame;
@@ -1804,7 +1814,7 @@ void run_stream(std::string mediaPath, GstElement* pipeline, GstElement* appsink
             else
 	        {
                 printf("ERROR: Unknown model type\n");
-		        return;
+		        return 1;
 	        }
             metricStartTime = std::chrono::high_resolution_clock::now();
 	        analytics_frame.convertTo(analytics_frame, CV_32F);
@@ -1884,6 +1894,7 @@ void run_stream(std::string mediaPath, GstElement* pipeline, GstElement* appsink
                 {
                     std::cout << "Error occured during inference. Code:" << code << std::endl;
                     //std::cout << "Details: " << details << std::endl;
+                    exitCode = 1;
                     break;
                 }
                 else
@@ -1978,11 +1989,20 @@ void run_stream(std::string mediaPath, GstElement* pipeline, GstElement* appsink
 
                 strftime(bCurrTime, sizeof(bCurrTime), "%Y-%m-%d.%X", &tstruct);
 
+                string pipelineFps = ((isinf(fps)) ? "..." : std::to_string(fps));
                 cout << detectedResults.size() << " object(s) detected at " << bCurrTime  << endl;
-                cout << "Avg. Pipeline Throughput FPS: " << ((isinf(fps)) ? "..." : std::to_string(fps)) << endl;
+                cout << "Avg. Pipeline Throughput FPS: " << pipelineFps << endl;
                 cout << "Avg. Pipeline Latency (ms): " << avg_latency_frame << endl;
                 cout << "Max. Pipeline Latency (ms): " << highest_latency_frame << endl;
                 cout << "Min. Pipeline Latency (ms): " << lowest_latency_frame << endl;
+
+                if (_useMqtt) {
+                    if (mqttPublisher == nullptr) {
+                        mqttPublisher = new MQTTPublisher(mqttClientID, _mqttBroker, _mqttPortNum);
+                    }
+                    mqttPublisher->publish(mqttTopic, pipelineFps);
+                }
+
                 highest_latency_frame = 0;
                 lowest_latency_frame = 9999;
                 total_latency_frames = 0;
@@ -2011,6 +2031,10 @@ void run_stream(std::string mediaPath, GstElement* pipeline, GstElement* appsink
 
     std::cout << "Goodbye..." << std::endl;
 
+    if (mqttPublisher != nullptr) {
+        delete mqttPublisher;
+    }
+
     if (res != NULL) {
         OVMS_StatusDelete(res);
         res = NULL;
@@ -2027,6 +2051,8 @@ void run_stream(std::string mediaPath, GstElement* pipeline, GstElement* appsink
 
     if (appsink)
         gst_object_unref(appsink);
+
+    return exitCode;
 }
 
 void print_usage(const char* programName) {
@@ -2038,7 +2064,10 @@ void print_usage(const char* programName) {
         << "\tvideo_type for media 1: 0 for HEVC or 1 for AVC\n"
         << "\twindow_width is display window width\n"
         << "\twindow_height is display window height\n"
-        << "\tdetection_threshold is confidence threshold value in floating point that needs to be between 0.0 to 1.0\n";
+        << "\tdetection_threshold is confidence threshold value in floating point that needs to be between 0.0 to 1.0\n"
+        << "\tresult_use_mqtt: 1 to use mqtt to publish the pipeline FPS results\n"
+        << "\tmqtt_broker: the ip or hostname of MQTT broker\n"
+        << "\tmqtt_port: the  port number of MQTT broker\n";
 }
 
 int getFreePort(const int startingPort) {
@@ -2089,9 +2118,16 @@ int getFreePort(const int startingPort) {
 
 
 int main(int argc, char** argv) {
+    // first check the number of the required arguments:
+    if (argc < 9) {
+        std:cout << "at least need 8 required input arguments!" << endl;
+        print_usage(argv[0]);
+        return 1;
+    }
 
     if (!stringIsInteger(argv[2]) || !stringIsInteger(argv[3]) || !stringIsInteger(argv[4])
-        || !stringIsInteger(argv[5]) || !stringIsInteger(argv[6]) || !stringIsInteger(argv[7]) || !stringIsFloat(argv[8])) {
+        || !stringIsInteger(argv[5]) || !stringIsInteger(argv[6]) || !stringIsInteger(argv[7]) || !stringIsFloat(argv[8])
+        || !stringIsInteger(argv[9])) {
         print_usage(argv[0]);
         return 1;
     } else {
@@ -2113,6 +2149,25 @@ int main(int argc, char** argv) {
         if (_detection_threshold > 1.0 || _detection_threshold < 0.0) {
             std::cout << "detection_threshold: " << _detection_threshold << ", is confidence threshold value in floating point that needs to be between 0.0 to 1.0.\n" << endl;
             return 1;
+        }
+
+        if (argc > 10) {
+            // these two arguments are optional:
+            _useMqtt = std::stoi(argv[9]);
+            std::cout << "use mqtt: " << _useMqtt << endl;
+            _mqttBroker = argv[10];
+            std::cout << "mqttBroker: " << _mqttBroker << endl;
+            if (_useMqtt && _mqttBroker.empty()) {
+                std::cout << "use mqtt is true but mqttBroker is empty, please configure the mqtt broker hostname or address!" << endl;
+                return 1;
+            }
+            if (!stringIsInteger(argv[11])) {
+                std::cout << "the input mqtt port number should be an integer but found: " << argv[11] << endl;
+                print_usage(argv[0]);
+                return 1;
+            }
+            _mqttPortNum = std::stoi(argv[11]);
+            std::cout << "mqtt port =  " << _mqttPortNum << endl;
         }
 
         // Swap width/height to enable portrait mode
@@ -2167,7 +2222,7 @@ int main(int argc, char** argv) {
     }
 
     if (!loadOVMS())
-        return -1;
+        return 1;
 
     // give some time for OVMS server being ready
     sleep(10);
@@ -2190,5 +2245,5 @@ int main(int argc, char** argv) {
     if (_serverSettings)
         OVMS_ServerSettingsDelete(_serverSettings);
 
-    return 0;
+    return exitCode;
 }

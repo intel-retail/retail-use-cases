@@ -61,10 +61,32 @@ services:
       - DISPLAY=$DISPLAY
       - OVMS_MODEL_CONFIG_JSON=/app/gst-ovms/pipelines/yolov8_ensemble/config-yolov8.json
       - PIPELINE_PROFILE=capi_yolov8_ensemble
+      - RESULT_USE_MQTT=1
+      - MQTT_BROKER=mqtt-broker
+      - MQTT_PORT=1883
     depends_on:
       - camera-simulator1
+      - mqtt-broker
     volumes:
       - $RESULTS_DIR:/tmp/results
       - ~/.Xauthority:/home/dlstreamer/.Xauthority
       - /tmp/.X11-unix
       - ~/.cl-cache:/home/pipeline-server/.cl-cache
+
+  mqtt-broker:
+    command:
+      - /usr/sbin/mosquitto
+      - -c
+      - /mosquitto-no-auth.conf
+    container_name: mqtt-broker
+    hostname: mqtt-broker
+    image: eclipse-mosquitto:2.0.19
+    ports:
+      - target: 1883
+        published: 1883
+        protocol: tcp
+    read_only: true
+    restart: always
+    security_opt:
+      - no-new-privileges:true
+    user: 2002:2001

@@ -68,12 +68,24 @@ echo "PIPELINE_PROFILE: $PIPELINE_PROFILE  DEVICE: $DEVICE"
 
 echo "DC: $DC INPUTSRC: $INPUTSRC USE_VPL: $USE_VPL RENDER_MODE: $RENDER_MODE RENDER_PORTRAIT_MODE: $RENDER_PORTRAIT_MODE"
 echo "CODEC_TYPE: $CODEC_TYPE WINDOW_WIDTH: $WINDOW_WIDTH WINDOW_HEIGHT: $WINDOW_HEIGHT DETECTION_THRESHOLD: $DETECTION_THRESHOLD"
+echo "RESULT_USE_MQTT=$RESULT_USE_MQTT MQTT_BROKER=$MQTT_BROKER MQTT_PORT=$MQTT_PORT"
 
 appExitCode=0
 # Direct console output
 if [ "$DC" != 1 ]
 then
-	/app/gst-ovms/pipelines/yolov8_ensemble/capi_yolov8_ensemble $INPUTSRC $USE_VPL $RENDER_MODE $RENDER_PORTRAIT_MODE $CODEC_TYPE $WINDOW_WIDTH $WINDOW_HEIGHT $DETECTION_THRESHOLD 2>&1 | tee >/tmp/results/r"$cid"_"$PIPELINE_PROFILE".jsonl >(stdbuf -oL sed -n -e 's/^.*FPS: //p' | stdbuf -oL cut -d , -f 1 > /tmp/results/pipeline"$cid"_"$PIPELINE_PROFILE".log)
+	if [ "$RESULT_USE_MQTT" == 1 ]
+	then
+		echo "publish pipeline results using MQTT: $MQTT_BROKER"
+		/app/gst-ovms/pipelines/yolov8_ensemble/capi_yolov8_ensemble $INPUTSRC $USE_VPL $RENDER_MODE $RENDER_PORTRAIT_MODE \
+			$CODEC_TYPE $WINDOW_WIDTH $WINDOW_HEIGHT $DETECTION_THRESHOLD 1 $MQTT_BROKER $MQTT_PORT
+	else
+		outLogFileName=/tmp/results/pipeline"$cid"_"$PIPELINE_PROFILE".log
+		echo "publish pipeline results using file: $outLogFileName"
+		/app/gst-ovms/pipelines/yolov8_ensemble/capi_yolov8_ensemble $INPUTSRC $USE_VPL $RENDER_MODE $RENDER_PORTRAIT_MODE \
+			$CODEC_TYPE $WINDOW_WIDTH $WINDOW_HEIGHT $DETECTION_THRESHOLD 0 $MQTT_BROKER $MQTT_PORT \
+			2>&1 | tee >/tmp/results/r"$cid"_"$PIPELINE_PROFILE".jsonl >(stdbuf -oL sed -n -e 's/^.*FPS: //p' | stdbuf -oL cut -d , -f 1 > "$outLogFileName")
+	fi
 	appExitCode=$?
 	sleep 10
 	ls -al /app/gst-ovms/pipelines/yolov8_ensemble/config-yolov8.json
@@ -81,7 +93,9 @@ then
 	ls -al /dev/dri
 	cat /tmp/results/r"$cid"_"$PIPELINE_PROFILE".jsonl
 else
-	/app/gst-ovms/pipelines/yolov8_ensemble/capi_yolov8_ensemble $INPUTSRC $USE_VPL $RENDER_MODE $RENDER_PORTRAIT_MODE $CODEC_TYPE $WINDOW_WIDTH $WINDOW_HEIGHT $DETECTION_THRESHOLD
+	echo "publish pipeline results using MQTT: $MQTT_BROKER"
+	/app/gst-ovms/pipelines/yolov8_ensemble/capi_yolov8_ensemble $INPUTSRC $USE_VPL $RENDER_MODE $RENDER_PORTRAIT_MODE \
+		$CODEC_TYPE $WINDOW_WIDTH $WINDOW_HEIGHT $DETECTION_THRESHOLD 1 $MQTT_BROKER $MQTT_PORT
 	appExitCode=$?
 fi
 
