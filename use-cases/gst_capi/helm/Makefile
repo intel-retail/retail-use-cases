@@ -22,7 +22,7 @@ build: build_capi_yolov8_ensemble
 
 build_capi_yolov8_ensemble:
 	echo "Building CAPI YOLOv8 Ensemble container: HTTP_PROXY=${HTTP_PROXY} HTTPS_PROXY=${HTTPS_PROXY}"
-	cd .. && docker build -t yolov8capiensemble:dev -f Dockerfile.yolov8 ./pipelines
+	docker build -t yolov8capiensemble:dev -f Dockerfile_yolov8 .
 
 minikube_build_capi_yolov8_ensemble:
 # clean up in case there is some left-over due to build error
@@ -62,7 +62,7 @@ down_capi_yolov8_ensemble:
 	minikube stop
 
 helm_install_capi_yolov8_ensemble:
-	helm install -f $(YOLOV8_PACKAGE_NAME)/Chart.yaml dls $(YOLOV8_PACKAGE_NAME)
+	helm install -f $(YOLOV8_PACKAGE_NAME)/Chart.yaml object-detection-capi-yolov8 $(YOLOV8_PACKAGE_NAME)
 
 helm_uninstall_capi_yolov8_ensemble:
-	helm uninstall dls
+	helm uninstall object-detection-capi-yolov8
