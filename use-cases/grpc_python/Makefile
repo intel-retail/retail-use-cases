@@ -35,19 +35,17 @@ build-minikube:
 	minikube image build -t grpc_python:dev -f Dockerfile .
 	minikube image build -t ovms-server:dev -f use-cases/grpc_python/pipeline-server/Dockerfile ../../
 
-run-minikube-demo: build-minikube
-	kompose -f docker-compose_grpc_python.yml convert -o kubernetes/ && \
-	kubectl apply -f kubernetes
+run-minikube-demo: build-minikube helm-convert install-helm
 	
 stop-minikube-demo:
-	kubectl delete -f kubernetes
+	kubectl delete -f object-detection-service-distributed-grpc
 	minikube stop
 
 helm-convert:
 	kompose -f docker-compose_grpc_python.yml convert -o object-detection-service-distributed-grpc -c
 
 install-helm:
-	helm install -f kubernetes/Chart.yaml dls kubernetes
+	helm install -f object-detection-service-distributed-grpc/Chart.yaml dls object-detection-service-distributed-grpc
 
 uninstall-helm:
 	helm uninstall dls
