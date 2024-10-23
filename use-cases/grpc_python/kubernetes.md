@@ -49,7 +49,7 @@ kompose -f docker-compose.yml convert -o kubernetes/
 
 ## Useful helm commands
 
-helm repo add dls https://intel-retail.github.io/automated-self-checkout/
+helm repo add dls https://intel-retail.github.io/retail-use-cases/
 helm search repo dls
 helm install dls dls/dls
 helm package object-detection-service-distributed-grpc
