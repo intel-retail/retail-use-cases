@@ -52,7 +52,7 @@ services:
       - DISPLAY=$DISPLAY
       - DETECTION_MODEL_NAME=yolov5s
     depends_on:
-      - OvmsServer
+      - ovms-server
     volumes:
       - ../../results:/tmp/results
       - ~/.Xauthority:/home/dlstreamer/.Xauthority
