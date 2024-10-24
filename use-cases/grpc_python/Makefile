@@ -37,7 +37,7 @@ build-minikube:
 
 run-minikube-demo: build-minikube helm-convert install-helm
 	
-stop-minikube-demo: uninstall-helm:
+stop-minikube-demo: uninstall-helm
 	minikube stop
 
 helm-convert:
