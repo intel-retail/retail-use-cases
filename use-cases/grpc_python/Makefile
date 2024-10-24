@@ -37,8 +37,7 @@ build-minikube:
 
 run-minikube-demo: build-minikube helm-convert install-helm
 	
-stop-minikube-demo:
-	kubectl delete -f object-detection-service-distributed-grpc
+stop-minikube-demo: uninstall-helm:
 	minikube stop
 
 helm-convert:

@@ -13,8 +13,7 @@ spec:
   selector:
     matchLabels:
       io.kompose.service: ovms-client-grpc-python
-  strategy:
-    type: Recreate
+  strategy: {}
   template:
     metadata:
       annotations:
@@ -51,22 +50,5 @@ spec:
           image: grpc_python:dev
           name: ovms-client-grpc-python
           resources: {}
-          volumeMounts:
-            - mountPath: /tmp/results
-              name: ovms-client-grpc-python-claim0
-            - mountPath: /home/dlstreamer/.Xauthority
-              name: ovms-client-grpc-python-claim1
-            - mountPath: /tmp/.X11-unix
-              name: ovms-client-grpc-python-claim2
       restartPolicy: Always
-      volumes:
-        - name: ovms-client-grpc-python-claim0
-          persistentVolumeClaim:
-            claimName: ovms-client-grpc-python-claim0
-        - name: ovms-client-grpc-python-claim1
-          persistentVolumeClaim:
-            claimName: ovms-client-grpc-python-claim1
-        - name: ovms-client-grpc-python-claim2
-          persistentVolumeClaim:
-            claimName: ovms-client-grpc-python-claim2
 status: {}

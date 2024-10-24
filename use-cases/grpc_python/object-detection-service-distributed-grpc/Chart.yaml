@@ -1,6 +1,6 @@
 name: object-detection-service-distributed-grpc
 description: A generated Helm Chart for object-detection-service-distributed-grpc from Skippbox Kompose
-version: 3.1.0
+version: 0.0.1
 apiVersion: v1
 keywords:
   - object-detection-service-distributed-grpc

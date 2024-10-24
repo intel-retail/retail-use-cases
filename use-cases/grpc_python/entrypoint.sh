@@ -46,6 +46,12 @@ sleep $OVMS_INIT_TIME_IN_SECOND
 
 PROFILE_NAME="grpc_python"
 
+mkdir -p /tmp/results
+touch /tmp/results/r"$cid"_gst.jsonl
+chown 1000:1000 /tmp/results/r"$cid"_gst.jsonl
+touch /tmp/results/pipeline"$cid"_gst.log
+chown 1000:1000 /tmp/results/pipeline"$cid"_gst.log
+
 # Run the grpc python client
 python3 ./grpc_python.py --input_src "$INPUTSRC" --grpc_address "$GRPC_ADDRESS" --grpc_port "$GRPC_PORT" --model_name "$DETECTION_MODEL_NAME" \
 2>&1  | tee >/tmp/results/r$cid"_$PROFILE_NAME".jsonl >(stdbuf -oL sed -n -e 's/^.*fps: //p' | stdbuf -oL cut -d , -f 1 > /tmp/results/pipeline$cid"_$PROFILE_NAME".log)

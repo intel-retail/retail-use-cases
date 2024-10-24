@@ -53,7 +53,3 @@ services:
       - DETECTION_MODEL_NAME=yolov5s
     depends_on:
       - ovms-server
-    volumes:
-      - ../../results:/tmp/results
-      - ~/.Xauthority:/home/dlstreamer/.Xauthority
-      - /tmp/.X11-unix
