@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose -f docker-compose_grpc_python.yml convert -o object-detection-service-distributed-grpc -c
+    kompose.version: 1.26.0 (40646f47)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: ovms-client-grpc-python
+  name: ovms-client-grpc-python
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: ovms-client-grpc-python
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose -f docker-compose_grpc_python.yml convert -o object-detection-service-distributed-grpc -c
+        kompose.version: 1.26.0 (40646f47)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: ovms-client-grpc-python
+    spec:
+      containers:
+        - command:
+            - /app/entrypoint.sh
+            - --model_name
+            - yolov5s
+          env:
+            - name: CONTAINER_NAME
+              value: '"grpc_python0"'
+            - name: DETECTION_MODEL_NAME
+              value: yolov5s
+            - name: DISPLAY
+              value: :1
+            - name: GRPC_ADDRESS
+              value: ovms-server
+            - name: GRPC_PORT
+              value: "9001"
+            - name: INPUTSRC
+              value: rtsp://camera-simulator:8554/camera_0
+            - name: OVMS_INIT_TIME_IN_SECOND
+              value: "10"
+            - name: RENDER_MODE
+              value: "0"
+            - name: TARGET_DEVICE
+              value: CPU
+          image: grpc_python:dev
+          name: ovms-client-grpc-python
+          resources: {}
+      restartPolicy: Always
+status: {}
