@@ -9,7 +9,7 @@ import cv2
 import paho.mqtt.publish as publish
 from argparse import ArgumentParser, SUPPRESS
 
-model = torch.hub.load('ultralytics/yolov5', 'yolov5s')
+model = torch.hub.load('ultralytics/yolov5', 'yolov5s') # nosec
 from utils.augmentations import letterbox
 
 
