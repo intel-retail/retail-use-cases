@@ -279,6 +279,37 @@ There are three different pipelines for demos use case: classification, instance
     make clean-results
     ```
 
+## pytorch object detection use case:
+
+- build pytorch pipeline
+
+    ```bash
+    make build-pytorch
+    ```
+
+- run one pytorch pipeline
+
+    ```bash
+    make run_pytorch_object_detection
+    ```
+
+- run two pytorch pipelines
+
+    ```bash
+    PIPELINE_COUNT=2 make run_pytorch_object_detection
+    ```
+
+- shutdown Docker containers
+
+    ```bash
+    make down_pytorch_object_detection
+    ```
+
+- clean up the output results
+
+    ```bash
+    make clean-results
+
 ---
 
 ## Disclaimer

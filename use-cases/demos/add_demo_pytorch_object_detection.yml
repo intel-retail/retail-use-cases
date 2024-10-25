@@ -15,7 +15,11 @@ services:
     entrypoint: /app/object_detection/pytorch-yolo/entrypoint.sh
     environment:
       - CONTAINER_NAME="demos-PytorchDemoObjectDetection-1"
-      - RENDER_MODE=0 #RENDER_MODE=1 will work only after running xhost +local:docker
+      - MQTT_HOSTNAME=localhost
+      - MQTT_PORT=1883
+      - MQTT_TOPIC=pytorch_yolov5_results
+      - INPUT_SRC=/home/pipeline-server/sample-media/coca-cola-4465029-1920-15-bench.mp4
+      - RENDER_MODE=1 #RENDER_MODE=1 will work only after running xhost +local:docker
       - DISPLAY=$DISPLAY
     volumes:
       - ${RESULTS_DIR}:/tmp/results
