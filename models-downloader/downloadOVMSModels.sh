@@ -278,6 +278,11 @@ downloadYolov8FP32INT8() {
 
 ### Run normal downloader via omz model downloader:
 configFile="$modelDir"/../use-cases/ovms_server/config.json
+OVMSConfigFileEnv="${OVMSConfigFileEnv:=}"
+if [ ! -f "$configFile" ]; then
+    echo "cannot find ovms server configFile: $configFile , will use environemnt variable value OVMSConfigFileEnv: $OVMSConfigFileEnv"
+    configFile=$OVMSConfigFileEnv
+fi
 mapfile -t model_base_path < <(docker run -i --rm -v ./:/app ghcr.io/jqlang/jq -r '.model_config_list.[].config.base_path' < "$configFile")
 
 echo "Looping through models defined in $configFile to download models via omz downloader..."
@@ -318,4 +323,3 @@ downloadYolov5sFP16INT8
 downloadEfficientnetb0
 downloadHorizontalText
 downloadTextRecognition
-downloadYolov8FP32INT8
