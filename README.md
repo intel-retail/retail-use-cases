@@ -281,7 +281,7 @@ There are three different pipelines for demos use case: classification, instance
 
 ## pytorch object detection use case:
 
-Run the following commands y changing directory to $RETAIL_USE_CASE_ROOT/retail-use-cases/use-cases/demos
+Run the following commands by changing directory to $RETAIL_USE_CASE_ROOT/retail-use-cases/use-cases/demos
 
 - build pytorch pipeline
 
@@ -307,7 +307,7 @@ Run the following commands y changing directory to $RETAIL_USE_CASE_ROOT/retail-
     make down_pytorch_object_detection
     ```
 
-Run the following commands by changing directory to $RETAIL_USE_CASE_ROOT/retail-use-cases
+Run the following command by changing directory to $RETAIL_USE_CASE_ROOT/retail-use-cases
 
 - clean up the output results
 
