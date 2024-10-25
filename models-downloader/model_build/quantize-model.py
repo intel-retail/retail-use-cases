@@ -21,18 +21,19 @@ import nncf  # noqa: F811
 from typing import Dict
 
 
-from ultralytics.yolo.utils import DEFAULT_CFG
-from ultralytics.yolo.cfg import get_cfg
-from ultralytics.yolo.data.utils import check_det_dataset
+from ultralytics.utils import DEFAULT_CFG
+from ultralytics.cfg import get_cfg
+from ultralytics.data.converter import coco80_to_coco91_class
+from ultralytics.data.utils import check_det_dataset
 import openvino as ov
 
 #from pathlib import Path
 #from typing import Tuple, Dict
 #import cv2
 import numpy as np
-from ultralytics.yolo.utils.plotting import colors
+from ultralytics.utils.plotting import colors
 from PIL import Image
-from ultralytics.yolo.utils import ops
+from ultralytics.utils import ops
 import torch
 from ultralytics import YOLO
 
@@ -180,12 +181,13 @@ DET_MODEL_NAME = "yolov8n"
 det_model = YOLO(models_dir / f'{DET_MODEL_NAME}.pt')
 #det_model.imgsz = 416
 
-det_validator = det_model.ValidatorClass(args=args)
+det_validator = det_model.task_map[det_model.task]["validator"](args=args)
 det_validator.data = check_det_dataset(args.data)
+det_validator.stride = 32
 det_data_loader = det_validator.get_dataloader("datasets/coco", 1)
 
 det_validator.is_coco = True
-det_validator.class_map = ops.coco80_to_coco91_class()
+det_validator.class_map = coco80_to_coco91_class()
 det_validator.names = det_model.model.names
 det_validator.metrics.names = det_validator.names
 det_validator.nc = det_model.model.model[-1].nc
@@ -193,7 +195,7 @@ det_validator.nc = det_model.model.model[-1].nc
 
 ##
 #from tqdm.notebook import tqdm
-from ultralytics.yolo.utils.metrics import ConfusionMatrix
+from ultralytics.utils.metrics import ConfusionMatrix
 
 
 def test(model:ov.Model, core:ov.Core, data_loader:torch.utils.data.DataLoader, validator, num_samples:int = None):
@@ -209,7 +211,7 @@ def test(model:ov.Model, core:ov.Core, data_loader:torch.utils.data.DataLoader, 
     """
     validator.seen = 0
     validator.jdict = []
-    validator.stats = []
+    validator.stats = dict(tp=[], conf=[], pred_cls=[], target_cls=[])
     validator.batch_i = 1
     validator.confusion_matrix = ConfusionMatrix(nc=validator.nc)
     model.reshape({0: [1, 3, -1, -1]})
@@ -239,6 +241,7 @@ def print_stats(stats:np.ndarray, total_images:int, total_objects:int):
     print("Boxes:")
     mp, mr, map50, mean_ap = stats['metrics/precision(B)'], stats['metrics/recall(B)'], stats['metrics/mAP50(B)'], stats['metrics/mAP50-95(B)']
     # Print results
+    print("    Best mean average:")
     s = ('%20s' + '%12s' * 6) % ('Class', 'Images', 'Labels', 'Precision', 'Recall', 'mAP@.5', 'mAP@.5:.95')
     print(s)
     pf = '%20s' + '%12i' * 2 + '%12.3g' * 4  # print format
@@ -274,25 +277,21 @@ quantization_dataset = nncf.Dataset(det_data_loader, transform_fn)
 #    ]
 #)
 
+# the new model version now has different node names:
 ignored_scope = nncf.IgnoredScope(
     types=["Multiply", "Subtract", "Sigmoid"],  # ignore operations
     names=[
-        "/model.22/dfl/conv/Conv",           # in the post-processing subgraph
-        "/model.22/Add",
-        "/model.22/Add_1",
-        "/model.22/Add_2",
-        "/model.22/Add_3",
-        "/model.22/Add_4",
-        "/model.22/Add_5",
-        "/model.22/Add_6",
-        "/model.22/Add_7",
-        "/model.22/Add_8",
-        "/model.22/Add_9",
-        "/model.22/Add_10"
+        "__module.model.22.dfl.conv/aten::_convolution/Convolution",
+        "__module.model.22/aten::add/Add",
+        "__module.model.22/aten::add/Add_1",
+        "__module.model.22/aten::add/Add_2",
+        "__module.model.22/aten::add/Add_3",
+        "__module.model.22/aten::add/Add_4",
+        "__module.model.22/aten::add/Add_5",
+        "__module.model.22/aten::add/Add_6",
+        "__module.model.22/aten::add/Add_7"
     ]
 )
-
-
 
 # Detection model
 core = ov.Core()
@@ -302,11 +301,15 @@ det_ov_model.reshape({0: [1, 3, 640, 640]})
 det_compiled_model = core.compile_model(det_ov_model, "CPU")
 
 NUM_TEST_SAMPLES = 300
-fp_det_stats = test(det_ov_model, core, det_data_loader, det_validator, num_samples=NUM_TEST_SAMPLES)
-print_stats(fp_det_stats, det_validator.seen, det_validator.nt_per_class.sum())
 
+print('-----------------------------------------------------------')
+all_layers = det_ov_model.get_ordered_ops()
 
+# Print the name and type of each layer
+for layer in all_layers:
+    print(f"Layer Name: {layer.get_friendly_name()}, Layer Type: {layer.get_type_name()}")
 
+print('-----------------------------------------------------------')
 
 
 quantized_det_model = nncf.quantize(
@@ -316,15 +319,16 @@ quantized_det_model = nncf.quantize(
     ignored_scope=ignored_scope
 )
 
-quantized_det_model.reshape({0: [1, 3, 640, 640]})
-
-int8_det_stats = test(quantized_det_model, core, det_data_loader, det_validator, num_samples=NUM_TEST_SAMPLES)
-print("FP32 model accuracy")
-print_stats(fp_det_stats, det_validator.seen, det_validator.nt_per_class.sum())
-print("INT8 model accuracy")
-print_stats(int8_det_stats, det_validator.seen, det_validator.nt_per_class.sum())
+quantized_det_model.reshape({0: [1, 3, 416, 416]})
 
 print("Build-in prrocessing")
+print("Set input and output tensor names")
+for idx, input_tensor in enumerate(quantized_det_model.inputs):
+    input_tensor.set_names({f"images"})
+
+for idx, output_tensor in enumerate(quantized_det_model.outputs):
+    output_tensor.set_names({f"output{idx}"})
+
 from openvino.preprocess import PrePostProcessor
 ppp = PrePostProcessor(quantized_det_model)
 

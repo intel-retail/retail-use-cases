@@ -50,8 +50,8 @@ static bool copy_images_into_output(struct CustomNodeTensor* output, const std::
     int channels = convertToGrayScale ? 1 : 3;
 
     uint64_t byteSize = sizeof(float) * targetImageHeight * targetImageWidth * channels * outputBatch;
-    float* buffer = (float*)malloc(byteSize);
 
+    float* buffer = (float*)malloc(byteSize);
     NODE_ASSERT(buffer != nullptr, "malloc has failed");
 
     for (uint64_t i = 0; i < outputBatch; i++) {
@@ -59,31 +59,29 @@ static bool copy_images_into_output(struct CustomNodeTensor* output, const std::
         cv::Mat image;
 
         cv::Rect box = boxes[i];
-        if (box.x < 0)
-            box.x = 0;
-        if (box.y < 0)
-            box.y = 0;
 
-        // std::string imgname = "/tmp/results/classifyimage" + std::to_string(i) + ".jpg";
-        // cv::imwrite(imgname.c_str(), originalImage);
+        // Check if the bounding box is valid
+        if (box.width <= 0 || box.height <= 0 || box.x < 0 || box.y < 0 ||
+            box.x + box.width > originalImage.cols || box.y + box.height > originalImage.rows) {
+            // If the bounding box is invalid, create a dummy image
+            std::cerr << "Invalid bounding box detected. Creating a dummy image." << std::endl;
+            image = cv::Mat(targetShape, convertToGrayScale ? CV_32FC1 : CV_32FC3, cv::Scalar(0.0));
+        } else {
+            // Crop the image using the valid bounding box
+            cv::Mat cropped = originalImage(box);
+            cv::resize(cropped, image, targetShape);
 
-        cv::Mat cropped = originalImage(box);
-        cv::resize(cropped, image, targetShape);
-
-        //  std::string imgname = "/tmp/results/classifyimage" + std::to_string(i) + ".jpg";
-        //  cv::Mat tmp2;
-        //  image.convertTo(tmp2, CV_8UC3);
-        //  cv::imwrite(imgname.c_str(), tmp2);
-
-        if (convertToGrayScale) {
-            image = apply_grayscale(image);
+            if (convertToGrayScale) {
+                image = apply_grayscale(image);
+            }
         }
 
+        // Reorder or copy the image to the buffer
         if (targetImageLayout == "NCHW") {
             auto imgBuffer = reorder_to_nchw((float*)image.data, image.rows, image.cols, image.channels());
             std::memcpy(buffer + (i * channels * targetImageWidth * targetImageHeight), imgBuffer.data(), byteSize / outputBatch);
         } else {
-             std::memcpy(buffer + (i * channels * targetImageWidth * targetImageHeight), image.data, byteSize / outputBatch);
+            std::memcpy(buffer + (i * channels * targetImageWidth * targetImageHeight), image.data, byteSize / outputBatch);
         }
     }
 
@@ -360,6 +358,12 @@ void postprocess(const float confidence_threshold, const int imageWidth, const i
             obj.classId = max_id - LABELS_START;
             obj.confidence = confidence;
 
+            if (debugMode) {
+                std::cout << "detected > threshold " << confidence_threshold << " confidence = " << confidence << std::endl;
+                std::cout << " obj.x = " << obj.x << " obj.y = " << obj.y << " obj.width = " << obj.width << " obj.height " << obj.height;
+                std::cout << " obj.classId = " << obj.classId << std::endl;
+            }
+
             boxes_with_class.emplace_back(obj);
             confidences.push_back(confidence);
         }
@@ -435,8 +439,14 @@ int execute(const struct CustomNodeTensor* inputs, int inputsCount, struct Custo
 
     for (int i = 0; i < inputsCount; i++) {
         if (std::strcmp(inputs[i].name, IMAGE_TENSOR_NAME) == 0) {
+            if (debugMode) {
+                std::cout << "found image tensor name: " << IMAGE_TENSOR_NAME << std::endl;
+            }
             imageTensor = &(inputs[i]);
         } else if (std::strcmp(inputs[i].name, GEOMETRY_TENSOR_NAME) == 0) {
+            if (debugMode) {
+                std::cout << "found geometry tensor name: " << GEOMETRY_TENSOR_NAME << std::endl;
+            }
             boxesTensor = &(inputs[i]);
         } else {
             std::cout << "Unrecognized input: " << inputs[i].name << std::endl;
@@ -460,6 +470,26 @@ int execute(const struct CustomNodeTensor* inputs, int inputsCount, struct Custo
 
     if (debugMode) {
         std::cout << "Processing input tensor image resolution: " << cv::Size(imageHeight, imageWidth) << "; expected resolution: " << cv::Size(originalImageHeight, originalImageWidth) << std::endl;
+
+        // Logging boxes tensor information
+        if (boxesTensor) {
+            std::cout << "Boxes Tensor Info:" << std::endl;
+            std::cout << "Boxes Precision: " << boxesTensor->precision << std::endl;
+            std::cout << "Boxes Dims Count: " << boxesTensor->dimsCount << std::endl;
+            for (uint32_t i = 0; i < boxesTensor->dimsCount; i++) {
+                std::cout << "Dim " << i << ": " << boxesTensor->dims[i] << std::endl;
+            }
+            const float* boxesData = reinterpret_cast<const float*>(boxesTensor->data);
+            std::cout << "Boxes Data: ";
+            for (size_t i = 0; i < boxesTensor->dataBytes / sizeof(float); i++) {
+                if (boxesData[i] > 1e-4) {
+                    std::cout << "boxesData at i= " << i << " is " << boxesData[i] << " ";
+                }
+            }
+            std::cout << std::endl;
+        } else {
+            std::cout << "Boxes Tensor is nullptr!" << std::endl;
+        }
     }
 
     NODE_ASSERT(imageHeight == originalImageHeight, "original image size parameter differs from original image tensor size");
@@ -489,6 +519,13 @@ int execute(const struct CustomNodeTensor* inputs, int inputsCount, struct Custo
     if (debugMode)
         std::cout << "Total findings: " << rects.size() << std::endl;
 
+    if (rects.empty()) {
+        std::cout << "WARN: no bounding boxes available after post-processing. Adding a dummy output." << std::endl;
+
+        rects.push_back(cv::Rect(0, 0, 0, 0));  // Adding a dummy bounding box
+        scores.push_back(0.0f);  // Adding a dummy score
+    }
+
     *outputsCount = 3; // pipeline outputs for efficientnetb0_extractor e.g. roi_images, roi_coordinates, confidence_levels
     *outputs = (struct CustomNodeTensor*)malloc(*outputsCount * sizeof(CustomNodeTensor));
 
@@ -497,6 +534,7 @@ int execute(const struct CustomNodeTensor* inputs, int inputsCount, struct Custo
     textImagesTensor.name = TEXT_IMAGES_TENSOR_NAME;
 
     if (!copy_images_into_output(&textImagesTensor, rects, image, targetImageHeight, targetImageWidth, targetImageLayout, convertToGrayScale)) {
+        std::cout << "failed at copy_images_into_output" << std::endl;
         free(*outputs);
         return 1;
     }
@@ -504,6 +542,7 @@ int execute(const struct CustomNodeTensor* inputs, int inputsCount, struct Custo
     CustomNodeTensor& coordinatesTensor = (*outputs)[1];
     coordinatesTensor.name = COORDINATES_TENSOR_NAME;
     if (!copy_coordinates_into_output(&coordinatesTensor, rects)) {
+        std::cout << "failed at copy_coordinates_into_output" << std::endl;
         free(*outputs);
         cleanup(textImagesTensor);
         return 1;
@@ -513,6 +552,7 @@ int execute(const struct CustomNodeTensor* inputs, int inputsCount, struct Custo
     CustomNodeTensor& confidenceTensor = (*outputs)[2];
     confidenceTensor.name = CONFIDENCE_TENSOR_NAME;
     if (!copy_scores_into_output(&confidenceTensor, scores)) {
+        std::cout << "failed at copy_scores_into_output" << std::endl;
         free(*outputs);
         cleanup(textImagesTensor);
         cleanup(coordinatesTensor);

@@ -5,7 +5,7 @@
 # -----------------------------------------------------------
 
 # https://hub.docker.com/r/openvino/model_server
-ARG BASE_IMAGE=openvino/model_server:2023.1-gpu
+ARG BASE_IMAGE=openvino/model_server:2024.4-gpu
 FROM $BASE_IMAGE AS release
 
 USER root
@@ -41,7 +41,7 @@ RUN apt update -y; apt install -y wget curl vim gpg-agent; wget -qO - https://re
 # Download OVMS C-API runtime
 RUN apt update -y; apt install -y wget curl vim && \
     rm -rf /var/lib/apt/lists/* && rm -rf /tmp/*
-RUN wget -O ovms.tar.gz https://github.com/openvinotoolkit/model_server/releases/download/v2023.2/ovms_ubuntu22.tar.gz
+RUN wget -O ovms.tar.gz https://github.com/openvinotoolkit/model_server/releases/download/v2024.4/ovms_ubuntu22.tar.gz
 RUN tar -xf ovms.tar.gz
 
 # Copy C-API sources
