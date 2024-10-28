@@ -52,7 +52,7 @@ down_object_detection:
 	@PIPELINE_COUNT=$(PIPELINE_COUNT) RETAIL_USE_CASE_ROOT="$(RETAIL_USE_CASE_ROOT)" RESULTS_DIR="$(RESULTS_DIR)" docker compose -f add_demo_object_detection.yml down
 
 gen_pytorch_object_detection:
-	@PIPELINE_COUNT=$(PIPELINE_COUNT) RETAIL_USE_CASE_ROOT="$(RETAIL_USE_CASE_ROOT)" RESULTS_DIR="$(RESULTS_DIR)" docker compose -f add_demo_pytorch_object_detection.yml convert > $(DOCKER_COMPOSE)
+	@PIPELINE_COUNT=$(PIPELINE_COUNT) RETAIL_USE_CASE_ROOT="$(RETAIL_USE_CASE_ROOT)" RESULTS_DIR="$(RESULTS_DIR)" docker compose -f add_demo_pytorch_object_detection.yml --env-file pytorch-yolov5-env.txt convert > $(DOCKER_COMPOSE)
 
 run_pytorch_object_detection: gen_pytorch_object_detection render
 	@PIPELINE_COUNT=$(PIPELINE_COUNT) RETAIL_USE_CASE_ROOT="$(RETAIL_USE_CASE_ROOT)" RESULTS_DIR="$(RESULTS_DIR)" docker compose -f $(DOCKER_COMPOSE) up -d
