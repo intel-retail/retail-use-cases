@@ -1,0 +1,34 @@
+{
+  "model_config_list": [
+    {
+      "config": {
+        "name": "yolov5s",
+        "base_path": "/models/yolov5s/FP16-INT8",
+        "layout": "NHWC:NCHW",
+        "shape": "(1,416,416,3)",
+        "nireq": 1,
+        "batch_size": "1",
+        "plugin_config": {
+          "PERFORMANCE_HINT": "LATENCY"
+        },
+        "target_device": "CPU"
+      }
+    },
+    {
+      "config": {
+        "name": "yolov5",
+        "base_path": "/models/yolov5s/FP16-INT8",
+        "shape": "(1,3,416,416)",
+        "nireq": 2,
+        "batch_size": "1",
+        "plugin_config": {
+          "PERFORMANCE_HINT": "LATENCY"
+        },
+        "target_device": "CPU"
+      },
+      "latest": {
+        "num_versions": 2
+      }
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose -f docker-compose_grpc_python.yml convert -o object-detection-service-distributed-grpc -c
+    kompose.version: 1.26.0 (40646f47)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: ovms-server
+  name: ovms-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: ovms-server
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose -f docker-compose_grpc_python.yml convert -o object-detection-service-distributed-grpc -c
+        kompose.version: 1.26.0 (40646f47)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: ovms-server
+    spec:
+      containers:
+        - env:
+            - name: DEVICE
+              value: CPU
+            - name: PLATFORM
+              value: '"core"'
+            - name: server_cl_cache_dir
+              value: /home/pipeline-server/.cl-cache
+          image: ovms-server:dev
+          name: ovms-server
+          ports:
+            - containerPort: 9001
+            - containerPort: 9002
+          resources: {}
+      restartPolicy: Always
+status: {}

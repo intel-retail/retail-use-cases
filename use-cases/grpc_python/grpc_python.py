@@ -85,7 +85,7 @@ if __name__ == '__main__':
     parser.add_argument('--input_src', required=True, default='', help='input source for the inference pipeline')
     parser.add_argument('--grpc_address',required=False, default='localhost',  help='Specify url to grpc service. default:localhost')
     parser.add_argument('--grpc_port',required=False, default=9000, help='Specify port to grpc service. default: 9000')
-    parser.add_argument('--model_name', default='instance-segmentation-security-1040', help='Define model name, must be same as is in service. default: resnet',
+    parser.add_argument('--model_name', default='yolov5s', help='Define model name, must be same as is in service. default: resnet',
                         dest='model_name')
     args = vars(parser.parse_args())
 
