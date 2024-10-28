@@ -1,0 +1,42 @@
+#
+# Copyright (C) 2024 Intel Corporation.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '3.10'
+services:
+  PytorchDemoObjectDetection:
+    image: pytorch-demo:dev
+    deploy:
+      mode: replicated
+      replicas: ${PIPELINE_COUNT}
+    network_mode: "host"
+    entrypoint: /app/object_detection/pytorch-yolo/entrypoint.sh
+    environment:
+      - CONTAINER_NAME="demos-PytorchDemoObjectDetection-1"
+      - MQTT_HOSTNAME=localhost
+      - MQTT_PORT=1883
+      - MQTT_TOPIC=pytorch_yolov5_results
+      - INPUT_SRC=$INPUT_SRC
+      - RENDER_MODE=1 #RENDER_MODE=1 will work only after running xhost +local:docker
+      - DISPLAY=$DISPLAY
+    volumes:
+      - ${RESULTS_DIR}:/tmp/results
+      - ~/.Xauthority:/home/dlstreamer/.Xauthority
+      - /tmp/.X11-unix
+      - ${RETAIL_USE_CASE_ROOT}/performance-tools/sample-media:/home/pipeline-server/sample-media
+  mqtt-broker:
+    command:
+      - /usr/sbin/mosquitto
+      - -c
+      - /mosquitto-no-auth.conf
+    container_name: mqtt-broker
+    hostname: mqtt-broker
+    image: eclipse-mosquitto:2.0.18
+    ports:
+      - 1883:1883
+    restart: always
+    security_opt:
+      - no-new-privileges:true
+    user: 2002:2001
