@@ -5,8 +5,8 @@
 # -----------------------------------------------------------
 
 # https://hub.docker.com/r/openvino/model_server
-ARG BASE_IMAGE=openvino/ubuntu22_dev:2023.2.0
-FROM $BASE_IMAGE as release
+ARG BASE_IMAGE=openvino/ubuntu22_dev:2024.4.0
+FROM $BASE_IMAGE AS release
 
 USER root
 WORKDIR /
