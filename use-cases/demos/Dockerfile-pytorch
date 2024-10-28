@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-# Use an appropriate base image with CUDA support
+# Use an appropriate base image
 FROM python:3.10
 
 # Set environment variables
