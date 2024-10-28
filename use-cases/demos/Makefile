@@ -7,6 +7,7 @@
 .PHONY: run_object_detection down_object_detection
 .PHONY: run_pytorch_object_detection down_pytorch_object_detection
 .PHONY: compose_down_all
+.PHONY: render
 
 DOCKER_COMPOSE ?= docker-compose.yml
 PIPELINE_COUNT ?= 1
@@ -19,6 +20,9 @@ build:
 
 build-pytorch:
 	docker build --tag pytorch-demo:dev -f Dockerfile-pytorch .
+
+render: 
+	xhost +local:docker
 
 gen_classification:
 	@PIPELINE_COUNT=$(PIPELINE_COUNT) RETAIL_USE_CASE_ROOT="$(RETAIL_USE_CASE_ROOT)" RESULTS_DIR="$(RESULTS_DIR)" docker compose -f $(DEPENDENCY_COMPOSE) -f add_demo_classification.yml convert > $(DOCKER_COMPOSE)
@@ -50,7 +54,7 @@ down_object_detection:
 gen_pytorch_object_detection:
 	@PIPELINE_COUNT=$(PIPELINE_COUNT) RETAIL_USE_CASE_ROOT="$(RETAIL_USE_CASE_ROOT)" RESULTS_DIR="$(RESULTS_DIR)" docker compose -f add_demo_pytorch_object_detection.yml convert > $(DOCKER_COMPOSE)
 
-run_pytorch_object_detection: gen_pytorch_object_detection
+run_pytorch_object_detection: gen_pytorch_object_detection render
 	@PIPELINE_COUNT=$(PIPELINE_COUNT) RETAIL_USE_CASE_ROOT="$(RETAIL_USE_CASE_ROOT)" RESULTS_DIR="$(RESULTS_DIR)" docker compose -f $(DOCKER_COMPOSE) up -d
 
 down_pytorch_object_detection:
