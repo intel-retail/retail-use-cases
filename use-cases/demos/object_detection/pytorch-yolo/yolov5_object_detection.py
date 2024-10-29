@@ -8,6 +8,7 @@ import torch
 import cv2
 import paho.mqtt.publish as publish
 from argparse import ArgumentParser, SUPPRESS
+import time
 
 model = torch.hub.load('ultralytics/yolov5', 'yolov5s') # nosec
 from utils.augmentations import letterbox
@@ -16,12 +17,22 @@ from utils.augmentations import letterbox
 def process_video(video_path, mqtt_broker_hostname, mqtt_broker_port, mqtt_outgoing_topic):
     cap = cv2.VideoCapture(video_path)
 
+    t0 = time.time()
+    frame_count = 0
+    cumulative_fps = 0
+
     while cap.isOpened():
         ret, frame = cap.read()
         if not ret:
             break
 
         results = model(frame)
+               
+        elapsed_time = time.time() - t0
+        frame_count += 1
+        cumulative_fps = frame_count / elapsed_time
+        print(f"Cumulative Average FPS: {cumulative_fps: .2f}")
+
         results.render()
         print(results)
         detected_products_jsonMsg = results
