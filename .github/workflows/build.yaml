@@ -6,27 +6,53 @@ permissions:
   contents: read
 
 jobs:
-  build_SOC:
+  build-continual_learning:
       runs-on: ubuntu-latest
       steps:
           - name: Checkout code
             uses: actions/checkout@v3
-          - name: Make soc Docker images
+          - name: Make Docker images for continual_learning
             run: |
-              make build-soc
-  build_DGPU:
+              cd ./use-cases/continual_learning && make build
+  build-dlstreamer_ovms:
+      runs-on: ubuntu-latest
+      steps:
+          - name: Checkout code
+            uses: actions/checkout@
+          - name: CD to dir
+            run: cd ./use-cases/dlstreamer
+          - name: Make Docker images for dlstreamer_ovms
+            run: make build
+          - name: Make Docker images for dlstreamer_ovms RealSense
+            run: make build-realsense
+  build-grpc_golang:
       runs-on: ubuntu-latest
       steps:
           - name: Checkout code
             uses: actions/checkout@v3
-          - name: Make dgpu Docker images
+          - name: Setup Go
+            uses: actions/setup-go@v4
+            with: 
+              go-version: '1.20.2'
+          - name: Make Docker images for grpc_go
             run: |
-              make build-dgpu
-  build_OVMS_Profile_Launcher:
+              cd ./use-cases/grpc_go && make build
+  build-grpc_python:
       runs-on: ubuntu-latest
       steps:
           - name: Checkout code
             uses: actions/checkout@v3
-          - name: Build ovms profile launcher
+          - name: Make Docker images for grpc_python
             run: |
-              make build-profile-launcher
+              cd ./use-cases/grpc_python && make build
+  build-gst_capi:
+      runs-on: ubuntu-latest
+      steps:
+          - name: Checkout code
+            uses: actions/checkout@v3
+          - name: CD to dir
+            run: cd ./use-cases/gst_capi
+          - name: Make Docker images for gst_capi
+            run: make build
+          - name: Make Docker images for gst_capi yolov8
+            run: make build_capi_yolov8_ensemble
