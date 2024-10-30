@@ -24,12 +24,10 @@ jobs:
       steps:
           - name: Checkout code
             uses: actions/checkout@v3
-          - name: CD to dir
-            run: cd ./use-cases/dlstreamer
           - name: Make Docker images for dlstreamer_ovms
-            run: make build
+            run: cd ./use-cases/dlstreamer && make build
           - name: Make Docker images for dlstreamer_ovms RealSense
-            run: make build-realsense
+            run: cd ./use-cases/dlstreamer && make build-realsense
   build-grpc_golang:
       runs-on: ubuntu-latest
       steps:
@@ -55,9 +53,7 @@ jobs:
       steps:
           - name: Checkout code
             uses: actions/checkout@v3
-          - name: CD to dir
-            run: cd ./use-cases/gst_capi
           - name: Make Docker images for gst_capi
-            run: make build
+            run: cd ./use-cases/gst_capi && make build
           - name: Make Docker images for gst_capi yolov8
-            run: make build_capi_yolov8_ensemble
+            run: cd ./use-cases/gst_capi && make build_capi_yolov8_ensemble
