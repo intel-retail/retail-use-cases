@@ -15,7 +15,7 @@ jobs:
       runs-on: ubuntu-latest
       steps:
           - name: Checkout code
-            uses: actions/checkout@v3
+            uses: actions/checkout@v4
           - name: Make Docker images for continual_learning
             run: |
               cd ./use-cases/continual_learning && make build
@@ -23,7 +23,7 @@ jobs:
       runs-on: ubuntu-latest
       steps:
           - name: Checkout code
-            uses: actions/checkout@v3
+            uses: actions/checkout@v4
           - name: Make Docker images for dlstreamer_ovms
             run: cd ./use-cases/dlstreamer && make build
           - name: Make Docker images for dlstreamer_ovms RealSense
@@ -32,7 +32,7 @@ jobs:
       runs-on: ubuntu-latest
       steps:
           - name: Checkout code
-            uses: actions/checkout@v3
+            uses: actions/checkout@v4
           - name: Setup Go
             uses: actions/setup-go@v4
             with: 
@@ -44,7 +44,7 @@ jobs:
       runs-on: ubuntu-latest
       steps:
           - name: Checkout code
-            uses: actions/checkout@v3
+            uses: actions/checkout@v4
           - name: Make Docker images for grpc_python
             run: |
               cd ./use-cases/grpc_python && make build
@@ -52,8 +52,12 @@ jobs:
       runs-on: ubuntu-latest
       steps:
           - name: Checkout code
-            uses: actions/checkout@v3
-          - name: Make Docker images for gst_capi
-            run: cd ./use-cases/gst_capi && make build
+            uses: actions/checkout@v4
+          - name: Make Docker images for gst_capi face detection
+            run: cd ./use-cases/gst_capi && make build_face_detection
+          - name: Make Docker images for gst_capi yolov5
+            run: cd ./use-cases/gst_capi && make build_capi_yolov5
+          - name: Make Docker images for gst_capi capi yolov5 ensemble
+            run: cd ./use-cases/gst_capi && make build_capi_yolov5_ensemble
           - name: Make Docker images for gst_capi yolov8
             run: cd ./use-cases/gst_capi && make build_capi_yolov8_ensemble
