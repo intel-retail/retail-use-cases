@@ -18,12 +18,6 @@ RELEASE_VERSION=3.2.0
 YOLOV8_PACKAGE_NAME=capi-yolov8-ensemble
 YOLOV8_POD_NAME=$(shell kubectl get pod | grep "capiyolov8ensemble" | awk '{print $$1}')
 
-build: build_capi_yolov8_ensemble
-
-build_capi_yolov8_ensemble:
-	echo "Building CAPI YOLOv8 Ensemble container: HTTP_PROXY=${HTTP_PROXY} HTTPS_PROXY=${HTTPS_PROXY}"
-	docker build -t yolov8capiensemble:dev -f Dockerfile_yolov8 .
-
 minikube_build_capi_yolov8_ensemble:
 # clean up in case there is some left-over due to build error
 	rm -rf ./pipelines || true

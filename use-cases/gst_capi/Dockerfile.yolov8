@@ -5,7 +5,7 @@
 # -----------------------------------------------------------
 
 # https://hub.docker.com/r/openvino/model_server
-ARG BASE_IMAGE=openvino/model_server:2024.3-gpu
+ARG BASE_IMAGE=openvino/model_server:2024.4-gpu
 FROM $BASE_IMAGE AS release
 
 USER root
@@ -21,8 +21,12 @@ RUN apt -y update && \
     apt install -y ${BUILD_DEPENDENCIES} && \
     rm -rf /var/lib/apt/lists/* && rm -rf /tmp/*
 
-# Install GStramer
+# Install GStreamer
 RUN apt update -y; apt install -y libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libgstreamer-plugins-bad1.0-dev gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3 gstreamer1.0-qt5 gstreamer1.0-pulseaudio && \
+    rm -rf /var/lib/apt/lists/* && rm -rf /tmp/*
+
+# install mqtt-client and libraries
+RUN apt update -y; apt install -y mosquitto-clients libpaho-mqtt-dev && \
     rm -rf /var/lib/apt/lists/* && rm -rf /tmp/*
 
 # Install MSDK/oneAPI oneVPL libs
@@ -33,7 +37,7 @@ RUN apt update -y; apt install -y wget curl vim gpg-agent; wget -qO - https://re
 # Download OVMS C-API runtime
 RUN apt update -y; apt install -y wget curl vim && \
     rm -rf /var/lib/apt/lists/* && rm -rf /tmp/*
-RUN wget -O ovms.tar.gz https://github.com/openvinotoolkit/model_server/releases/download/v2023.2/ovms_ubuntu22.tar.gz
+RUN wget -O ovms.tar.gz https://github.com/openvinotoolkit/model_server/releases/download/v2024.4/ovms_ubuntu22.tar.gz
 RUN tar -xf ovms.tar.gz
 
 # Copy C-API sources
@@ -45,7 +49,6 @@ COPY capi_yolov8_ensemble /app/gst-ovms/pipelines/yolov8_ensemble
 
 RUN cd /app/gst-ovms/pipelines/yolov8_ensemble; make build
 
-USER ovms
 WORKDIR /app/gst-ovms/pipelines
 
 # Enable HWA decoder for OpenCV using GST use cases
