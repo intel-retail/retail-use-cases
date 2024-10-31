@@ -21,14 +21,16 @@ CUSTOM_NODE_FLAGS = -fpic -O2 -U_FORTIFY_SOURCE -fstack-protector -fno-omit-fram
 build:
 	g++ -c -std=c++17 efficientnetb0_node.cpp ${CUSTOM_NODE_FLAGS} ${CV_INCLUDES}
 
+	g++ -c -std=c++17 mqtt_messages.cpp ${CUSTOM_NODE_FLAGS} -I/usr/local/include -L/user/local/lib -lpaho-mqtt3c
+
 	g++ -std=c++17 -shared ${CUSTOM_NODE_FLAGS} -o libcustom_node_efficientnetb0-yolov8.so efficientnetb0_node.o ${CV_LIBS} ${CV_INCLUDES} \
 	               -lopencv_core -lopencv_dnn -lopencv_imgproc -lopencv_imgcodecs
 	cp libcustom_node_efficientnetb0-yolov8.so /ovms/lib/
 
 	g++ -std=c++17 main.cpp -I/usr/include/gstreamer-1.0/usr/lib/x86_64-linux-gnu/ -I/usr/local/include/gstreamer-1.0 \
-	                        -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/ovms/include \
-							$(CV_INCLUDES) $(CV_LIBS) -L/usr/lib/x86_64-linux-gnu/gstreamer-1.0 \
+	                        -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include \
+							-I/ovms/include $(CV_INCLUDES) $(CV_LIBS) -L/usr/lib/x86_64-linux-gnu/gstreamer-1.0 \
 							-lgstbase-1.0 -lgobject-2.0 -lglib-2.0 -lgstreamer-1.0 -lgstapp-1.0 -lopencv_imgcodecs -lopencv_imgproc -lopencv_core \
-							-lovms_shared -lopencv_highgui -lopencv_dnn -lpthread -fPIC --std=c++17 \
+							-lovms_shared -lopencv_highgui -lopencv_dnn -lpthread -lpaho-mqtt3c -fPIC --std=c++17 \
 							-o capi_yolov8_ensemble
 
