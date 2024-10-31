@@ -61,7 +61,7 @@ jobs:
       steps:
           - name: Checkout code
             uses: actions/checkout@v4
-            - name: Make Docker images for gst_capi yolov8
+          - name: Make Docker images for gst_capi yolov8
             run: cd ./use-cases/gst_capi && make build_capi_yolov8_ensemble
   build-ovms_server:
       runs-on: ubuntu-latest
