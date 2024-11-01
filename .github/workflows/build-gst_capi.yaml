@@ -3,9 +3,8 @@ run-name: GST C-API image builder
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
+    schedule:
+      - cron: '0 0 * * 6' # Run at 00:00 Friday UTC
   pull_request:
     paths:
       - use-cases/gst_capi/**
