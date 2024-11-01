@@ -1,0 +1,28 @@
+name: Build docker images for GRPC GoLang
+run-name: GRPC GoLang image builder
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+    paths:
+      - use-cases/grpc_go/**
+
+permissions:
+  contents: read
+
+jobs:
+  build-grpc_golang:
+      runs-on: ubuntu-latest
+      steps:
+          - name: Checkout code
+            uses: actions/checkout@v4
+          - name: Setup Go
+            uses: actions/setup-go@v5.1.0
+            with: 
+              go-version: '1.20.2'
+          - name: Make Docker images for grpc_go
+            run: |
+              cd ./use-cases/grpc_go && make build

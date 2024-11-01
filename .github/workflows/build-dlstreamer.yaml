@@ -1,0 +1,25 @@
+name: Build docker images for DLStreamer
+run-name: DLStreamer image builder
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+    paths:
+      - use-cases/dlstreamer/**
+
+permissions:
+  contents: read
+
+jobs:
+  build-dlstreamer_ovms:
+      runs-on: ubuntu-latest
+      steps:
+          - name: Checkout code
+            uses: actions/checkout@v4
+          - name: Make Docker images for dlstreamer_ovms
+            run: cd ./use-cases/dlstreamer && make build
+          - name: Make Docker images for dlstreamer_ovms RealSense
+            run: cd ./use-cases/dlstreamer && make build-realsense

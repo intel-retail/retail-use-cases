@@ -1,0 +1,30 @@
+name: Build docker images for GST C-API
+run-name: GST C-API image builder
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+    paths:
+      - use-cases/gst_capi/**
+
+permissions:
+  contents: read
+
+jobs:
+  build-gst_capi-yolov5:
+      runs-on: ubuntu-latest
+      steps:
+          - name: Checkout code
+            uses: actions/checkout@v4
+          - name: Make Docker images for gst_capi capi yolov5 ensemble
+            run: cd ./use-cases/gst_capi && make build_capi_yolov5_ensemble
+  build-gst_capi-yolov8:
+      runs-on: ubuntu-latest
+      steps:
+          - name: Checkout code
+            uses: actions/checkout@v4
+          - name: Make Docker images for gst_capi yolov8
+            run: cd ./use-cases/gst_capi && make build_capi_yolov8_ensemble

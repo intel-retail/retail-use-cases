@@ -1,0 +1,24 @@
+name: Build docker images for continual learning
+run-name: Continual Learning image builder
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+    paths:
+      - use-cases/continual_learning/**
+
+permissions:
+  contents: read
+
+jobs:
+  build-continual_learning:
+      runs-on: ubuntu-latest
+      steps:
+          - name: Checkout code
+            uses: actions/checkout@v4
+          - name: Make Docker images for continual_learning
+            run: |
+              cd ./use-cases/continual_learning && make build

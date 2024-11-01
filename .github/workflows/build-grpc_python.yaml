@@ -1,0 +1,24 @@
+name: Build docker images for GRPC Python
+run-name: GRPC Python image builder
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+    paths:
+      - use-cases/grpc_python/**
+
+permissions:
+  contents: read
+
+jobs:
+  build-grpc_python:
+      runs-on: ubuntu-latest
+      steps:
+          - name: Checkout code
+            uses: actions/checkout@v4
+          - name: Make Docker images for grpc_python
+            run: |
+              cd ./use-cases/grpc_python && make build

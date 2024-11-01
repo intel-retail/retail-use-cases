@@ -1,0 +1,24 @@
+name: Build docker images for OVMS server
+run-name: OVMS server image builder
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+    paths:
+      - use-cases/ovms_server/**
+
+permissions:
+  contents: read
+
+jobs:
+  build-ovms_server:
+      runs-on: ubuntu-latest
+      steps:
+          - name: Checkout code
+            uses: actions/checkout@v4
+          - name: Make Docker images for ovms_server
+            run: |
+              cd ./use-cases/ovms_server && make build
