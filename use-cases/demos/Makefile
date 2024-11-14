@@ -19,10 +19,10 @@ RESULTS_DIR ?= ../../results
 build:
 	docker build --tag python-demo:dev -f Dockerfile .
 
-build-pytorch:
+build_pytorch:
 	docker build --tag pytorch-demo:dev -f Dockerfile-pytorch .
 
-build-tensorflow-keras:
+build_tensorflow_keras:
 	docker build --tag tensorflow-keras-classification-demo:dev -f Dockerfile-tensorflow-keras .
 
 render: 

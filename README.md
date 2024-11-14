@@ -286,7 +286,7 @@ Run the following commands by changing directory to ./retail-use-cases/use-cases
 - build pytorch pipeline
 
     ```bash
-    make build-pytorch
+    make build_pytorch
     ```
 
 - run one pytorch pipeline
@@ -321,7 +321,7 @@ Run the following commands by changing directory to ./retail-use-cases/use-cases
 - build tensorflow keras pipeline
 
     ```bash
-    make build-tensorflow-keras
+    make build_tensorflow_keras
     ```
 
 - run one tensorflow keras pipeline
