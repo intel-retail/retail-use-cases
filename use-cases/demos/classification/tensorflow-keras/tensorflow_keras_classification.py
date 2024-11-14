@@ -13,7 +13,7 @@ import paho.mqtt.publish as publish
 from argparse import ArgumentParser, SUPPRESS
 import time
 
-model = tf.keras.applications.ResNet50(weights='imagenet')
+model = tf.keras.applications.ResNet50(weights='imagenet') # nosec
 
 def perform_detection(img):
     x = image.img_to_array(img)
