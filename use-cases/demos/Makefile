@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 .PHONY: build
+.PHONY: build_pytorch build_tensorflow_keras
 .PHONY: run_classification down_classification
 .PHONY: run_instance_segmentation down_instance_segmentation
 .PHONY: run_object_detection down_object_detection

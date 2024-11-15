@@ -5,7 +5,7 @@
 #
 
 # Use an appropriate base image
-FROM python:3.10
+FROM python:3.12
 
 # Set environment variables
 ENV DEBIAN_FRONTEND noninteractive
