@@ -2,10 +2,12 @@
 # SPDX-License-Identifier: Apache-2.0
 
 .PHONY: build
+.PHONY: build_pytorch build_tensorflow_keras
 .PHONY: run_classification down_classification
 .PHONY: run_instance_segmentation down_instance_segmentation
 .PHONY: run_object_detection down_object_detection
 .PHONY: run_pytorch_object_detection down_pytorch_object_detection
+.PHONY: run_tensorflow_keras_classification down_tensorflow_keras_classification
 .PHONY: compose_down_all
 .PHONY: render
 
@@ -18,8 +20,11 @@ RESULTS_DIR ?= ../../results
 build:
 	docker build --tag python-demo:dev -f Dockerfile .
 
-build-pytorch:
+build_pytorch:
 	docker build --tag pytorch-demo:dev -f Dockerfile-pytorch .
+
+build_tensorflow_keras:
+	docker build --tag tensorflow-keras-classification-demo:dev -f Dockerfile-tensorflow-keras .
 
 render: 
 	xhost +local:docker
@@ -60,5 +65,14 @@ run_pytorch_object_detection: gen_pytorch_object_detection render
 down_pytorch_object_detection:
 	@PIPELINE_COUNT=$(PIPELINE_COUNT) RETAIL_USE_CASE_ROOT="$(RETAIL_USE_CASE_ROOT)" RESULTS_DIR="$(RESULTS_DIR)" docker compose -f add_demo_pytorch_object_detection.yml down
 
-compose_down_all: down_classification down_instance_segmentation down_object_detection down_pytorch_object_detection
+gen_tensorflow_keras_classification:
+	@PIPELINE_COUNT=$(PIPELINE_COUNT) RETAIL_USE_CASE_ROOT="$(RETAIL_USE_CASE_ROOT)" RESULTS_DIR="$(RESULTS_DIR)" docker compose -f add_demo_tensorflow_keras_classification.yml --env-file tensorflow-keras-env.txt convert > $(DOCKER_COMPOSE)
+
+run_tensorflow_keras_classification: gen_tensorflow_keras_classification render
+	@PIPELINE_COUNT=$(PIPELINE_COUNT) RETAIL_USE_CASE_ROOT="$(RETAIL_USE_CASE_ROOT)" RESULTS_DIR="$(RESULTS_DIR)" docker compose -f $(DOCKER_COMPOSE) up -d
+
+down_tensorflow_keras_classification:
+	@PIPELINE_COUNT=$(PIPELINE_COUNT) RETAIL_USE_CASE_ROOT="$(RETAIL_USE_CASE_ROOT)" RESULTS_DIR="$(RESULTS_DIR)" docker compose -f add_demo_tensorflow_keras_classification.yml down
+
+compose_down_all: down_classification down_instance_segmentation down_object_detection down_pytorch_object_detection down_tensorflow_keras_classification
 	@docker compose -f $(DEPENDENCY_COMPOSE) down

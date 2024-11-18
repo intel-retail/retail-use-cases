@@ -286,7 +286,7 @@ Run the following commands by changing directory to ./retail-use-cases/use-cases
 - build pytorch pipeline
 
     ```bash
-    make build-pytorch
+    make build_pytorch
     ```
 
 - run one pytorch pipeline
@@ -305,6 +305,41 @@ Run the following commands by changing directory to ./retail-use-cases/use-cases
 
     ```bash
     make down_pytorch_object_detection
+    ```
+
+Run the following command by changing directory to ./retail-use-cases
+
+- clean up the output results
+
+    ```bash
+    make clean-results
+
+## tensorflow keras classification use case:
+
+Run the following commands by changing directory to ./retail-use-cases/use-cases/demos
+
+- build tensorflow keras pipeline
+
+    ```bash
+    make build_tensorflow_keras
+    ```
+
+- run one tensorflow keras pipeline
+
+    ```bash
+    make run_tensorflow_keras_classification
+    ```
+
+- run two tensorflow keras pipelines
+
+    ```bash
+    PIPELINE_COUNT=2 make run_tensorflow_keras_classification
+    ```
+
+- shutdown Docker containers
+
+    ```bash
+    make down_tensorflow_keras_classification
     ```
 
 Run the following command by changing directory to ./retail-use-cases

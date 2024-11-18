@@ -1,0 +1,5 @@
+tensorflow
+keras
+keras-cv
+opencv-contrib-python
+paho-mqtt
