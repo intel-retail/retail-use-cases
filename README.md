@@ -9,7 +9,8 @@ There are various use cases available, click one each hyperlink to find out more
 - [gst c-api](#gst_capi-use-cases)
 - [demos grpc OVMS](#demos-use-case)
 - [grpc go](#grpc_go-use-case)
-
+- [pytorch object detection use case](#pytorch-object-detection-use-case)
+- [tensorflow keras classification use case](#tensorflow-keras-classification-use-case)
 ---
 ---
 
