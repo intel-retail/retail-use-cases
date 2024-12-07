@@ -282,6 +282,21 @@ There are three different pipelines for demos use case: classification, instance
 
 ## pytorch object detection use case:
 
+There are two versions of this pipeline implemented in the code -
+
+- Using YOLOv5 from [PyTorch Hub](https://pytorch.org/hub/)
+- Using YOLOv5 from [Ultralytics](https://docs.ultralytics.com/)
+
+**Intel Optimized packages for pytorch is available only for running inference using OpenVino for Ultralytics implementation.**
+Performance comparison between using Intel optimzed packages for Ultralytics using OpenVino on different Intel platforms is available on the [official Ultralytics Page](https://docs.ultralytics.com/integrations/openvino/)
+
+As a developer make sure to set these two parameters in **pytorch-yolov5-env.txt** -
+
+- **USE_ULTRALYTICS** - Set it to 1 to use Ultralytics pipeline else to 0
+- **INTEL_OPTIMIZED** - Set it to 1 to use Intel optimzed packages for Ultralytics implementation else to 0
+
+**Note: Default for both these are set as 0.**
+
 Run the following commands by changing directory to ./retail-use-cases/use-cases/demos
 
 - build pytorch pipeline
