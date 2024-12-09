@@ -297,7 +297,9 @@ As a developer make sure to set these two parameters in [pytorch-yolov5-env.txt]
 - **INTEL_OPTIMIZED** - Set it to 1 to use Intel optimzed packages for Ultralytics implementation else to 0
 
 USE_ULTRALYTIC = 0 - use torch hub implementation (doesn't matter what INTEL_OPTIMIZED is )
+
 USE_ULTRALYTIC = 1, INTEL_OPTIMIZED = 0 - use ultralytics implementation
+
 USE_ULTRALYTIC = 1, INTEL_OPTIMIZED = 1 - use ultralytics implementation with intel optimized packages
 
 **Note: Default for both these are set as 0.**
