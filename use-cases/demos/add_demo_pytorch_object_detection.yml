@@ -21,6 +21,8 @@ services:
       - INPUT_SRC=$INPUT_SRC
       - RENDER_MODE=1 #RENDER_MODE=1 will work only after running xhost +local:docker
       - DISPLAY=$DISPLAY
+      - USE_ULTRALYTICS=$USE_ULTRALYTICS #Use the ultralytics implementation of pytorch object detection
+      - INTEL_OPTIMIZED=$INTEL_OPTIMIZED #Use intel optimized pytorch package for ultralytics implementation of pytorch object detection
     volumes:
       - ${RESULTS_DIR}:/tmp/results
       - ~/.Xauthority:/home/dlstreamer/.Xauthority
