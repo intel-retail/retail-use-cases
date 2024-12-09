@@ -13,12 +13,13 @@ echo "cid: $cid"
 #Default set to 0, use torch hub implementation of YOLO object detection
 echo "USE_ULTRALYTICS: $USE_ULTRALYTICS"
 
-#INTEL_OPTIMIZED for using intel optimized packages of ultralytics implementation of YOLO object detection
-#Default set to 0, torch hub implementation doesn't support intel optimized packages
-echo "INTEL_OPTIMIZED: $INTEL_OPTIMIZED"
+
 
 if [ $USE_ULTRALYTICS -eq 1 ]; 
 then
+ #INTEL_OPTIMIZED for using intel optimized packages of ultralytics implementation of YOLO object detection
+ #Default set to 0, torch hub implementation doesn't support intel optimized packages
+ echo "INTEL_OPTIMIZED: $INTEL_OPTIMIZED"
  if [ $INTEL_OPTIMIZED -eq 1 ]; 
  then 
  PROFILE_NAME="demo_intel_ultralytics_pytorch_object_detection"
