@@ -3,3 +3,4 @@ torchvision
 torchaudio
 ultralytics 
 paho-mqtt
+openvino
