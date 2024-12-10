@@ -316,6 +316,14 @@ Run the following command by changing directory to ./retail-use-cases
 
 ## tensorflow keras classification use case:
 
+There are two versions of this pipeline inplemented in the code - 
+    Using [Tensorflow](https://www.tensorflow.org/)
+    Using [Tensorflow Lite](https://www.tensorflow.org/lite)
+
+As a developer make sure to set this parameter in the [tensorflow-keras-env.txt](use-cases/demos/tensorflow-keras-env.txt) -
+
+- **USE_TFLITE** - Set it to 1 to use Tensorflow Lite Interpreter else to 0
+
 Run the following commands by changing directory to ./retail-use-cases/use-cases/demos
 
 - build tensorflow keras pipeline
