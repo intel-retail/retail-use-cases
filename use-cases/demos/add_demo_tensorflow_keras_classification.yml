@@ -20,6 +20,7 @@ services:
       - MQTT_TOPIC=tensorflow_keras_classification_results
       - INPUT_SRC=$INPUT_SRC
       - RENDER_MODE=1 #RENDER_MODE=1 will work only after running xhost +local:docker
+      - USE_TFLITE=$USE_TFLITE
       - DISPLAY=$DISPLAY
     volumes:
       - ${RESULTS_DIR}:/tmp/results
