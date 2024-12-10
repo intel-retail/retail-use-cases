@@ -287,9 +287,9 @@ There are two versions of this pipeline implemented in the code -
 - Using YOLOv5 from [PyTorch Hub](https://pytorch.org/hub/)
 - Using YOLOv5 from [Ultralytics](https://docs.ultralytics.com/)
 
-**Intel Optimized packages for pytorch is available only for running inference using OpenVino for Ultralytics implementation.**
+**Intel Optimized packages for pytorch are available only for running inference using OpenVino for Ultralytics implementation.**
 
-Performance comparison between using Intel optimzed packages for Ultralytics using OpenVino on different Intel platforms is available on the [official Ultralytics Page](https://docs.ultralytics.com/integrations/openvino/)
+Performance comparison using Intel optimzed packages for Ultralytics using OpenVino on different Intel platforms is available on the [official Ultralytics Page](https://docs.ultralytics.com/integrations/openvino/)
 
 As a developer make sure to set these two parameters in [pytorch-yolov5-env.txt](use-cases/demos/pytorch-yolov5-env.txt) -
 
