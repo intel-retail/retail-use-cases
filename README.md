@@ -9,7 +9,8 @@ There are various use cases available, click one each hyperlink to find out more
 - [gst c-api](#gst_capi-use-cases)
 - [demos grpc OVMS](#demos-use-case)
 - [grpc go](#grpc_go-use-case)
-
+- [pytorch object detection use case](#pytorch-object-detection-use-case)
+- [tensorflow keras classification use case](#tensorflow-keras-classification-use-case)
 ---
 ---
 
@@ -280,6 +281,28 @@ There are three different pipelines for demos use case: classification, instance
     ```
 
 ## pytorch object detection use case:
+
+There are two versions of this pipeline implemented in the code -
+
+- Using YOLOv5 from [PyTorch Hub](https://pytorch.org/hub/)
+- Using YOLOv5 from [Ultralytics](https://docs.ultralytics.com/)
+
+**Intel Optimized packages for pytorch are available only for running inference using OpenVino for Ultralytics implementation.**
+
+Performance comparison using Intel optimzed packages for Ultralytics using OpenVino on different Intel platforms is available on the [official Ultralytics Page](https://docs.ultralytics.com/integrations/openvino/)
+
+As a developer make sure to set these two parameters in [pytorch-yolov5-env.txt](use-cases/demos/pytorch-yolov5-env.txt) -
+
+- **USE_ULTRALYTICS** - Set it to 1 to use Ultralytics pipeline else to 0
+- **INTEL_OPTIMIZED** - Set it to 1 to use Intel optimzed packages for Ultralytics implementation else to 0
+
+USE_ULTRALYTIC = 0 - use torch hub implementation (doesn't matter what INTEL_OPTIMIZED is )
+
+USE_ULTRALYTIC = 1, INTEL_OPTIMIZED = 0 - use ultralytics implementation
+
+USE_ULTRALYTIC = 1, INTEL_OPTIMIZED = 1 - use ultralytics implementation with intel optimized packages
+
+**Note: Default for both these are set as 0.**
 
 Run the following commands by changing directory to ./retail-use-cases/use-cases/demos
 
