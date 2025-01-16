@@ -19,9 +19,9 @@ import tensorflow as tf
 import streamlit as st
 from st_aggrid import GridOptionsBuilder, AgGrid
 from streamlit_webrtc import webrtc_streamer, VideoProcessorBase
-from models.utils import extract_features
+from model.utils import extract_features
 from config import IMG_AUGMENT_LAYERS
-from models.slda import SLDA
+from model.slda import SLDA
 from lib.dataset.synthesizer import synthesize_by_sharding_over_labels
 from lib.dataset.utils import as_tuple, get_label_distribution
 
