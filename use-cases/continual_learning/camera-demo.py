@@ -16,13 +16,13 @@ import operator
 import numpy as np
 import cv2
 from config import IMG_AUGMENT_LAYERS
-from models.slda import SLDA
+from model.slda import SLDA
 
 # Config/Options
 from config import IMG_AUGMENT_LAYERS
 
 # Model/Loss definitions
-from models.utils import extract_features
+from model.utils import extract_features
 
 # Dataset handling (synthesize/build/query)
 from lib.dataset.utils import as_tuple, get_label_distribution
