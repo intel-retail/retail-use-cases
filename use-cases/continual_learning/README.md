@@ -84,6 +84,7 @@ This application supports the following two working modes:
         - image2.jpg
         ...
 
+Note: If adding training/prediction images within the `/use-cases/continual_learning/images` folder, please delete the `Green_Grape/Images.txt` and `Red_Apple/Images.txt` text files.
 
 ## SLDA Results Using Public Datasets
 
