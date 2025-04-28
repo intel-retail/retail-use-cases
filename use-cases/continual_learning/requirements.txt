@@ -1,4 +1,4 @@
-# Copyright © 2024 Intel Corporation. All rights reserved.
+# Copyright © 2025 Intel Corporation. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 tqdm==4.66.3
 absl-py==1.4.0
