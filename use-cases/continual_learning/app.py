@@ -142,7 +142,17 @@ def Train(mode, abs_path, groundtruth = None):
     if mode != "video-capture":
         groundtruth = os.path.basename(os.path.dirname(abs_path))
 
-    list_ds = tf.data.Dataset.list_files(str(abs_path))
+    print("Abs_path passed to Train():", abs_path)
+    matched_files = tf.io.gfile.glob(str(abs_path))
+    print("Matched files:", matched_files)
+
+    matched_files = tf.io.gfile.glob(str(abs_path))
+    if not matched_files:
+        st.error(f"No files found in: {abs_path}")
+        return
+
+    # list_ds = tf.data.Dataset.list_files(str(abs_path))
+    list_ds = tf.data.Dataset.from_tensor_slices(matched_files)
 
     # If train per folder, get number of train samples
     if mode == "folder":
@@ -167,6 +177,8 @@ def Train(mode, abs_path, groundtruth = None):
                                         .batch(1)
                                         .prefetch(tf.data.AUTOTUNE)), model=feature_extractor)
 
+    print("Extracted features:", train_features)
+
     N_PARTITIONS = 1
 
     # This returns a dictionary of partitioned datasets, keyed by partition_id, an integer
@@ -180,19 +192,43 @@ def Train(mode, abs_path, groundtruth = None):
         dist = get_label_distribution(partitioned_dataset[partition_id])
         print(f'Partition {partition_id}: {dist}')
 
-    # Incrementally train on each partition
     for partition_id in partitioned_dataset:
-        print(f'Training [{partition_id+1}/{len(partitioned_dataset)}]')
+        print(f'Training [{partition_id + 1}/{len(partitioned_dataset)}]')
 
-        # Build Train Dataset pipeline
-        train_ds = (partitioned_dataset[partition_id]
-                    .cache()
-                    .map(as_tuple(x='image', y='label'))
-                    .batch(1)  # SLDA learns 1-sample at a time. Inference can be done on batch.
-                    .prefetch(tf.data.AUTOTUNE))
+        # Extract current partition
+        partition = (
+            partitioned_dataset[partition_id]
+            .cache()
+            .map(as_tuple(x='image', y='label'))
+        )
 
-        model.fit(train_ds, epochs=1)
-        print("")
+        # Convert to NumPy arrays
+        X_list, y_list = [], []
+        for img_tensor, label_tensor in partition:
+            try:
+                img_np = img_tensor.numpy()
+                label_np = label_tensor.numpy()
+            except Exception as e:
+                print(f"❌ Tensor to NumPy conversion failed: {e}")
+                continue
+
+            if img_np.size == 0:
+                print("⚠️ Skipping empty image")
+                continue
+
+            X_list.append(img_np.squeeze())
+            y_list.append(label_np)
+
+        if not X_list:
+            print(f"⚠️ Partition {partition_id} is empty, skipping.")
+            continue
+
+        X = np.stack(X_list)
+        y = np.array(y_list)
+
+        print(f"Training SLDA on X: {X.shape}, y: {y.shape}")
+        model.fit(X, y)
+
 
 def Test(filename, mode, measure_cta):
     image=tf.keras.preprocessing.image.load_img(filename,target_size=(224,224))
@@ -319,6 +355,7 @@ if "1" in mode:
                 df,
                 gridOptions=gridOptions,
                 width='100%',
+                height=250,
                 fit_columns_on_grid_load=True,
                 allow_unsafe_jscode=True,
                 enable_enterprise_modules=False,
@@ -370,17 +407,21 @@ if "1" in mode:
             # If run prediction
             if predict_btn:
                 file = f"{selected_folder_path}/{selected[0]['filename']}"
+
                 top1, top2, top3, top4, top5 = Test(filename=file, mode="1", measure_cta=True if len(st.session_state['sku_table']) > 1 else False)
 
                 # Show prediction Result
                 st.divider()
                 st.header("Prediction Results")
                 top1_col, top2_col, top3_col, top4_col, top5_col = st.columns(5)
-                top1_col.metric(label="Top 1", value=str(top1))
-                top2_col.metric(label="Top 2", value=str(top2))
-                top3_col.metric(label="Top 3", value=str(top3))
-                top4_col.metric(label="Top 4", value=str(top4))
-                top5_col.metric(label="Top 5", value=str(top5))
+                top1_col.metric(label="Top 1", value=str(top1[0] if top1 else "N/A"))
+                top2_col.metric(label="Top 2", value=str(top2[0] if top2 else "N/A"))
+                top3_col.metric(label="Top 3", value=str(top3[0] if top3 else "N/A"))
+                top4_col.metric(label="Top 4", value=str(top4[0] if top4 else "N/A"))
+                top5_col.metric(label="Top 5", value=str(top5[0] if top5 else "N/A"))
+
+                # st.write("Predicted:", top1[0])
+                # st.write("Ground Truth:", auto_groundtruth)
 
                 # Cumulative Testing Accuracy
                 st.divider()
@@ -413,6 +454,7 @@ if "1" in mode:
                     df_sku_table,
                     gridOptions=gridOptions,
                     width='100%',
+                    height=400,
                     fit_columns_on_grid_load=True,
                     allow_unsafe_jscode=True,
                     enable_enterprise_modules=False,
