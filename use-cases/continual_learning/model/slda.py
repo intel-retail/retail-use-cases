@@ -87,8 +87,6 @@ class SLDA(tf.keras.Model):
 
     if len(X) != len(y):
         raise ValueError(f"Mismatch: X has {len(X)} samples, y has {len(y)} labels")
-
-    print(f"✅ SLDA.fit() received: X={X.shape}, y={y.shape}")
     
     # Process each sample individually
     for i in range(len(X)):
@@ -99,7 +97,6 @@ class SLDA(tf.keras.Model):
         # Call train_step with single sample
         self.train_step((x_sample, y_sample))
     
-    print(f"✅ SLDA training completed for {len(X)} samples")
     return self
 
   def train_step(self, data):
