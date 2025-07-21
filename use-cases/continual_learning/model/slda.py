@@ -1,4 +1,4 @@
-# Copyright (C) 2024 Intel Corporation.
+#  Copyright (C) 2024 Intel Corporation.
 #
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -6,6 +6,7 @@
 from logging import getLogger
 
 import tensorflow as tf
+import numpy as np
 
 logger = getLogger(__name__)
 
@@ -73,31 +74,57 @@ class SLDA(tf.keras.Model):
     self._steps = tf.Variable(initial_value=0)
     self._trigger_update = tf.Variable(initial_value=True, trainable=False)
 
-  def fit(self, X, **kwargs):
+  def fit(self, X, y=None, **kwargs):
+    """
+    Custom fit method to handle NumPy arrays and process samples one by one.
+    """
+    # Just a check in case user passes tf.data.Dataset by mistake
     if isinstance(X, tf.data.Dataset):
-      (x, _) = next(iter(X))
-      if x.shape[0] > 1:
-        raise Exception(
-            'batch>1 for training dataset is not supported (expected batch=1)')
-      super().fit(X, **kwargs)
+        raise TypeError("SLDA.fit() expects NumPy arrays, not tf.data.Dataset")
+
+    if X is None or y is None:
+        raise ValueError("SLDA.fit() received None for X or y")
+
+    if len(X) != len(y):
+        raise ValueError(f"Mismatch: X has {len(X)} samples, y has {len(y)} labels")
+    
+    # Process each sample individually
+    for i in range(len(X)):
+        # Convert single sample to TensorFlow tensors with correct shapes
+        x_sample = tf.convert_to_tensor(X[i:i+1], dtype=tf.float32)  # Shape: (1, n_components)
+        y_sample = tf.convert_to_tensor([y[i]], dtype=tf.int32)      # Shape: (1,)
+        
+        # Call train_step with single sample
+        self.train_step((x_sample, y_sample))
+    
+    return self
 
   def train_step(self, data):
     """Update mean/covariance for the given (x,y) pair"""
     # Unpack
     x, y = data
+    
+    # Ensure y is a scalar for indexing
+    y_scalar = y[0] if tf.rank(y) > 0 else y
 
     # Calculate scatter
-    x_minus_mu = (x - tf.gather(self.means, y))
+    x_minus_mu = (x - tf.gather(self.means, y_scalar))
     scatter = tf.matmul(tf.transpose(x_minus_mu, [1, 0]), x_minus_mu)
     delta = scatter * tf.cast(self._steps / (self._steps + 1), tf.float32)
 
     # Update means, counts, sigma
     self.sigma.assign((tf.cast(self._steps, tf.float32) * self.sigma + delta) /
                       tf.cast(self._steps + 1, tf.float32))
+    
+    # Update means
+    current_count = tf.gather(self.counts, y_scalar)
+    mean_update = x_minus_mu / (current_count + 1)
     self.means.assign(
-        tf.tensor_scatter_nd_add(self.means, [y],
-                                 x_minus_mu / (tf.gather(self.counts, y) + 1)))
-    self.counts.assign(tf.tensor_scatter_nd_add(self.counts, [y], [1]))
+        tf.tensor_scatter_nd_add(self.means, [[y_scalar]], mean_update))
+    
+    # Update counts
+    self.counts.assign(tf.tensor_scatter_nd_add(self.counts, [[y_scalar]], [1.0]))
+    
     self._trigger_update.assign(True)
     self._steps.assign_add(1)
 
@@ -113,11 +140,19 @@ class SLDA(tf.keras.Model):
 
   def call(self, x):
     """Inference step, update inverse if not done (once)"""
-    if self._trigger_update:
+    # Use tf.cond instead of Python if statement for graph compatibility
+    def update_lambda():
       reg_sigma = (1 - self.shrinkage) * self.sigma + self.shrinkage * tf.eye(
           tf.shape(self.sigma)[0])
       self.Lambda.assign(tf.linalg.pinv(reg_sigma))
       self._trigger_update.assign(False)
+      return self.Lambda
+    
+    def no_update():
+      return self.Lambda
+    
+    # Update Lambda if needed
+    tf.cond(self._trigger_update, update_lambda, no_update)
 
     # Forward pass
     m_T = tf.transpose(self.means, [1, 0])
@@ -125,3 +160,4 @@ class SLDA(tf.keras.Model):
     b = -0.5 * tf.reduce_sum(m_T * W, axis=0)
     logits = tf.matmul(x, W) + b
     return logits
+    
