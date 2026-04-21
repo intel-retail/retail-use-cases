@@ -8,7 +8,7 @@ tensorflow-datasets==4.6.0
 scikit-learn==1.5.0
 opencv-python==4.10.0.84
 pillow==12.2.0
-streamlit==1.37.0
+streamlit==1.54.0
 streamlit-aggrid==0.3.4.post3
 streamlit-webrtc==0.47.1
 tensorflow-metadata==1.13.0
