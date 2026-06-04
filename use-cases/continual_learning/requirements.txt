@@ -12,4 +12,4 @@ streamlit==1.54.0
 streamlit-aggrid==0.3.4.post3
 streamlit-webrtc==0.47.1
 tensorflow-metadata==1.13.0
-notebook==7.2.2
+notebook==7.5.6
